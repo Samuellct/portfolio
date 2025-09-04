@@ -1,0 +1,203 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "education": "Formation",
+    "projects": "Projets",
+    "blog": "Blog",
+    "contact": "Contact"
+  },
+  "hero": {
+    "name": "Samuel Lecomte",
+    "title": "Master en Physique & Science des Données",
+    "subtitle": "Diplômé récent passionné par la recherche scientifique et l'analyse de données",
+    "cta": "Découvrir mon parcours",
+    "contact": "Me contacter"
+  },
+  "about": {
+    "title": "À propos de moi",
+    "presentation": "Présentation",
+    "presentationText": "Je suis un étudiant de 23 ans sérieux et déterminé, actuellement en Master de Physique. Mon stage en laboratoire en 2024 m'a permis de développer une méthodologie de recherche rigoureuse et une grande autonomie. Fort de cette expérience, je suis à la recherche de nouvelles opportunités pour approfondir mes connaissances.",
+    "goals": "Objectifs professionnels",
+    "goalsText": "Ouvert aux opportunités de doctorat en physique fondamentale ou aux postes en science des données dans l'industrie. Je cherche à appliquer mes compétences analytiques et ma rigueur scientifique dans des projets innovants.",
+    "technicalSkills": "Compétences techniques",
+    "otherSkills": "Autres compétences",
+    "otherSkillsList": [
+      "Analyse des données",
+      "LaTeX",
+      "Arduino",
+      "Communication scientifique",
+      "Français (natif)",
+      "Anglais (courant)"
+    ],
+    "downloadCV": "CV ↗",
+    "languages": "Langues",
+    "interests": "Centres d'intérêt"
+  },
+  "education": {
+    "title": "Formation académique",
+    "master": {
+      "title": "Master Physique Fondamentale et Applications - parcours Univers et Particules",
+      "school": "Université Clermont Auvergne",
+      "period": "2023-2025",
+      "location": "Clermont-Ferrand (63)"
+    },
+    "du": {
+      "title": "Diplôme Universitaire Data Scientist",
+      "school": "Université Clermont Auvergne",
+      "period": "2024-2025",
+      "location": "Clermont-Ferrand (63)"
+    },
+    "bachelor": {
+      "title": "Licence de Physique",
+      "school": "Université Clermont Auvergne",
+      "period": "2019-2023",
+      "location": "Clermont-Ferrand (63)"
+    },
+    "bac": {
+      "title": "Baccalauréat Scientifique",
+      "school": "Lycée François Rabelais",
+      "period": "2019",
+      "location": "Chinon (37)"
+    }
+  },
+  "projects": {
+    "title": "Projets & Expériences professionnelles",
+    "academic": "Projets académiques",
+    "personal": "Projets personnels",
+    "internship": "Stage en laboratoire",
+    "filter": {
+      "all": "Tous les projets",
+      "academic": "Académiques",
+      "personal": "Personnels"
+    },
+    "academicProjects": {
+      "dataAnalysis": {
+        "title": "Analyse des Données - L3",
+        "description": "Présentation du processus de filtrage de données brutes appliqué aux données simulées du HL-LHC pour estimer la présence d'un 'boson X'.",
+        "tech": ["Python", "Analyse statistique", "Simulation"]
+      },
+      "collectivePhenomena": {
+        "title": "Phénomènes Collectifs - M1",
+        "description": "Étude du modèle d'Ising avec écriture d'un code Python simulant le cas à deux dimensions.",
+        "tech": ["Python", "Physique statistique", "Simulation Monte Carlo"]
+      },
+      "quantumMechanics": {
+        "title": "Mécanique Quantique - M1",
+        "description": "Introduction à l'informatique quantique et son application à la cryptographie. Simulation Python de l'algorithme quantique de Shor via la librairie Cirq.",
+        "tech": ["Python", "Cirq", "Cryptographie quantique"]
+      },
+      "arduino": {
+        "title": "Projet Arduino - M1",
+        "description": "Création d'une station météo composée de plusieurs capteurs et d'un écran pour visualiser les données.",
+        "tech": ["Arduino", "C++", "Capteurs IoT"]
+      },
+      "labview": {
+        "title": "Projet LabVIEW - M1",
+        "description": "Développement d'un environnement LabVIEW pour contrôler un détecteur à muons avec analyse graphique des données.",
+        "tech": ["LabVIEW", "Acquisition de données", "Interface graphique"]
+      },
+      "particlePhysics": {
+        "title": "Physique des Particules - M1",
+        "description": "Acquisition de données via un détecteur à muons et analyse avec ROOT pour déterminer le temps de vie des muons.",
+        "tech": ["ROOT", "C++", "Analyse statistique"]
+      }
+    },
+    "personalProjects": {
+      "homeServer": {
+        "title": "Serveur Domestique Proxmox",
+        "description": "Configuration d'un serveur Proxmox avec VM TrueNAS pour créer un cloud familial sécurisé. Gestion du stockage, sauvegarde automatique et accès distant.",
+        "tech": ["Proxmox", "TrueNAS", "Virtualisation", "Réseau"]
+      },
+      "homeAutomation": {
+        "title": "Domotique Home Assistant",
+        "description": "Système de domotique basé sur Home Assistant pour contrôler les appareils IoT et automatiser les tâches quotidiennes. Intégration de capteurs, éclairage intelligent et automatisations personnalisées.",
+        "tech": ["Home Assistant", "IoT", "Python", "YAML"]
+      }
+    },
+    "internshipProject": {
+      "title": "Stage de Master 1 LPCA - Équipe LHCb",
+      "period": "Avril - Juin 2024",
+      "location": "Aubière (63170)",
+      "description": "Étude d'un mode de désintégration rare du méson B. Développement de scripts d'analyse de données avec ROOT pour le Run I de LHCb.",
+      "tech": ["ROOT", "C++", "Analyse de données", "Physique des particules"]
+    },
+    "internshipProjectM2": {
+      "title": "Stage de Master 2 LPCA - Équipe ATLAS",
+      "period": "Février - Juillet 2025",
+      "location": "Aubière (63170)",
+      "description": "Génération et analyse d'événements simulés pour évaluer la faisabilité de recherches de particules à longue durée de vie (LLP) au HL-LHC. Production de scénarios HAHM (modes ggH et VH) et optimisation du rapport signal/bruit. Caractérisation des signatures LLP et estimation de l'acceptance du détecteur ATLAS.",
+      "tech": ["MadGraph", "Pythia", "Rivet", "C++", "git"]
+    }
+  },
+  "workExperience": {
+    "title": "Expériences professionnelles",
+    "jobs": [
+      {
+        "title": "Saisonnier viticole",
+        "period": "Juillet 2024",
+        "company": "Charles Joguet",
+        "location": "Sazilly"
+      },
+      {
+        "title": "Employé commercial",
+        "period": "Juin 2023 - Août 2023",
+        "company": "Super U",
+        "location": "Chinon"
+      },
+      {
+        "title": "Employé commercial",
+        "period": "Juillet 2022 - Août 2022",
+        "company": "Super U",
+        "location": "Chinon"
+      },
+      {
+        "title": "Agent de production",
+        "period": "Juillet 2021 - Août 2021",
+        "company": "Reitzel briand",
+        "location": "Bourré"
+      }
+    ]
+  },
+  "blog": {
+    "title": "Blog & Actualités",
+    "subtitle": "Partage d'expériences professionnelles, sportives et techniques",
+    "comingSoon": "Contenu à venir...",
+    "description": "Cet espace sera dédié au partage de mes expériences professionnelles, de mes accomplissements sportifs et de la documentation de mes projets techniques."
+  },
+  "contact": {
+    "title": "Coordonnées",
+    "getInTouch": "Me contacter",
+    "subtitle": "N'hésitez pas à me contacter pour discuter d'opportunités ou échanger sur des projets",
+    "form": {
+      "name": "Nom",
+      "email": "Email",
+      "subject": "Sujet",
+      "message": "Message",
+      "send": "Envoyer",
+      "sending": "Envoi en cours..."
+    },
+    "info": {
+      "email": "samuel.lecomte@etu.uca.fr",
+      "location": "Tours (37), France"
+    },
+    "labels": {
+      "email": "Email",
+      "location": "Ville"
+    },
+    "social": {
+      "gitlab": "GitLab",
+      "linkedin": "LinkedIn"
+    }
+  },
+  "skills": {
+    "programming": "Programmation",
+    "dataAnalysis": "Analyse des données",
+    "tools": "Outils",
+    "languages": "Langues"
+  },
+  "footer": {
+    "rights": "Tous droits réservés",
+    "madeWith": "Réalisé avec"
+  }
+}

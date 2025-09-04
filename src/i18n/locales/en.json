@@ -1,0 +1,204 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "education": "Education",
+    "projects": "Projects",
+    "blog": "Blog",
+    "contact": "Contact"
+  },
+  "hero": {
+    "name": "Samuel Lecomte",
+    "title": "M.S. in Physics & Data Science",
+    "subtitle": "Recent graduate passionate about scientific research and data analysis",
+    "cta": "Discover my background",
+    "contact": "Get in touch"
+  },
+  "about": {
+    "title": "About me",
+    "presentation": "About me",
+    "presentationText": "I am a serious and determined 23-year-old student, currently pursuing a Master's in Physics. My laboratory internship in 2024 allowed me to develop rigorous research methodology and great autonomy. Building on this experience, I am seeking new opportunities to deepen my knowledge.",
+    "goals": "Professional goals", 
+    "goalsText": "Open to PhD opportunities in fundamental physics or data science positions in industry. I aim to apply my analytical skills and scientific rigor to innovative projects.",
+    "technicalSkills": "Technical skills",
+    "otherSkills": "Other skills",
+    "otherSkillsList": [
+      "Data analysis",
+      "LaTeX",
+      "Arduino",
+      "Scientific communication",
+      "French (native)",
+      "English (fluent)"
+    ],
+    "downloadCV": "Resume ↗",
+    "languages": "Languages",
+    "interests": "Interests"
+  },
+  "education": {
+    "title": "Academic background",
+    "master": {
+      "title": "Master's in Fundamental Physics and Applications - Universe & Particles specialisation",
+      "track": "Universe & Particles",
+      "school": "Université Clermont Auvergne",
+      "period": "2023-2025",
+      "location": "Clermont-Ferrand, France"
+    },
+    "du": {
+      "title": "University Degree in Data Science",
+      "school": "Université Clermont Auvergne",
+      "period": "2024-2025",
+      "location": "Clermont-Ferrand, France"
+    },
+    "bachelor": {
+      "title": "Bachelor's in Physics",
+      "school": "Université Clermont Auvergne",
+      "period": "2019-2023",
+      "location": "Clermont-Ferrand, France"
+    },
+    "bac": {
+      "title": "Scientific Baccalaureate",
+      "school": "Lycée François Rabelais",
+      "period": "2019",
+      "location": "Chinon, France"
+    }
+  },
+  "projects": {
+    "title": "Projects & Professional Experience",
+    "academic": "Academic projects",
+    "personal": "Personal projects",
+    "internship": "Laboratory internship",
+    "filter": {
+      "all": "All projects",
+      "academic": "Academic",
+      "personal": "Personal"
+    },
+    "academicProjects": {
+      "dataAnalysis": {
+        "title": "Data Analysis - L3",
+        "description": "Presentation of raw data filtering process applied to HL-LHC simulated data to estimate the presence of an 'X boson'.",
+        "tech": ["Python", "Statistical analysis", "Simulation"]
+      },
+      "collectivePhenomena": {
+        "title": "Collective Phenomena - M1",
+        "description": "Study of the Ising model with Python code implementation simulating the two-dimensional case.",
+        "tech": ["Python", "Statistical physics", "Monte Carlo simulation"]
+      },
+      "quantumMechanics": {
+        "title": "Quantum Mechanics - M1",
+        "description": "Introduction to quantum computing and its application to cryptography. Python simulation of Shor's quantum algorithm using the Cirq library.",
+        "tech": ["Python", "Cirq", "Quantum cryptography"]
+      },
+      "arduino": {
+        "title": "Arduino Project - M1",
+        "description": "Creation of a weather station composed of multiple sensors and a display to visualize data.",
+        "tech": ["Arduino", "C++", "IoT sensors"]
+      },
+      "labview": {
+        "title": "LabVIEW Project - M1",
+        "description": "Development of a LabVIEW environment to control a muon detector with graphical data analysis.",
+        "tech": ["LabVIEW", "Data acquisition", "GUI"]
+      },
+      "particlePhysics": {
+        "title": "Particle Physics - M1",
+        "description": "Data acquisition via muon detector and analysis with ROOT to determine muon lifetime.",
+        "tech": ["ROOT", "C++", "Statistical analysis"]
+      }
+    },
+    "personalProjects": {
+      "homeServer": {
+        "title": "Proxmox Home Server",
+        "description": "Proxmox server configuration with TrueNAS VM to create a secure family cloud. Storage management, automatic backup, and remote access.",
+        "tech": ["Proxmox", "TrueNAS", "Virtualization", "Networking"]
+      },
+      "homeAutomation": {
+        "title": "Home Assistant Automation",
+        "description": "Home automation system based on Home Assistant to control IoT devices and automate daily tasks. Integration of sensors, smart lighting, and custom automations.",
+        "tech": ["Home Assistant", "IoT", "Python", "YAML"]
+      }
+    },
+    "internshipProject": {
+      "title": "Master 1 Internship — LPCA (LHCb Team)",
+      "period": "April - June 2024",
+      "location": "Aubière, France",
+      "description": "Study of a rare B meson decay mode. Development of data analysis scripts with ROOT for LHCb Run I.",
+      "tech": ["ROOT", "C++", "Data analysis", "Particle physics"]
+    },
+    "internshipProjectM2": {
+      "title": "Master 2 Internship — LPCA (ATLAS Team)",
+      "period": "February - July 2025",
+      "location": "Aubière, France",
+      "description": "Generation and analysis of simulated events to assess the feasibility of long-lived particle (LLP) searches at the HL-LHC. Production of HAHM scenarios (ggH and VH modes) and optimization of signal-to-background ratio. Characterization of LLP signatures and estimation of ATLAS detector acceptance.",
+      "tech": ["MadGraph", "Pythia", "Rivet", "C++", "git & docker"]
+    }
+    },
+    "workExperience": {
+      "title": "Professional Experience",
+      "jobs": [
+        {
+          "title": "Seasonal vineyard worker",
+          "period": "July 2024",
+          "company": "Charles Joguet",
+          "location": "Sazilly"
+        },
+        {
+          "title": "Sales employee",
+          "period": "June 2023 - August 2023",
+          "company": "Super U",
+          "location": "Chinon"
+        },
+        {
+          "title": "Sales employee",
+          "period": "July 2022 - August 2022",
+          "company": "Super U",
+          "location": "Chinon"
+        },
+        {
+          "title": "Production agent",
+          "period": "July 2021 - August 2021",
+          "company": "Reitzel briand",
+          "location": "Bourré"
+        }
+      ]
+  },
+  "blog": {
+    "title": "Blog & Updates",
+    "subtitle": "Sharing professional, athletic, and technical experiences",
+    "comingSoon": "Content coming soon...",
+    "description": "This space will be dedicated to sharing my professional experiences, athletic achievements, and technical project documentation."
+  },
+  "contact": {
+    "title": "Contact",
+    "getInTouch": "Get In Touch",
+    "subtitle": "Feel free to reach out to discuss opportunities or exchange about projects",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "subject": "Subject",
+      "message": "Message",
+      "send": "Send",
+      "sending": "Sending..."
+    },
+    "info": {
+      "email": "samuel.lecomte@etu.uca.fr",
+      "location": "Tours (37), France"
+    },
+    "labels": {
+      "email": "Email",
+      "location": "Location"
+    },
+    "social": {
+      "gitlab": "GitLab",
+      "linkedin": "LinkedIn"
+    }
+  },
+  "skills": {
+    "programming": "Programming",
+    "dataAnalysis": "Data analysis",
+    "tools": "Tools",
+    "languages": "Languages"
+  },
+  "footer": {
+    "rights": "All rights reserved",
+    "madeWith": "Made with"
+  }
+}
