@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Routes, Route } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import Header from './components/Header';
@@ -65,10 +65,12 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+
+  const RouterComponent = import.meta.env.PROD ? HashRouter : BrowserRouter;
   return (
-    <Router basename={import.meta.env.BASE_URL}>
-      <div className="relative">
-        <AnimatePresence>{isLoading && <LoadingScreen />}</AnimatePresence>
+    <RouterComponent basename={import.meta.env.BASE_URL}>
+       <div className="relative">
+         <AnimatePresence>{isLoading && <LoadingScreen />}</AnimatePresence>
 
         {!isLoading && (
           <motion.div
@@ -77,17 +79,17 @@ function App() {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <Routes>
-             <Route path="/" element={<HomePage />} />
-             <Route path="/project/:projectId" element={<ProjectDetail />} />
-            <Route path="/project" element={<ProjectListing />} />
-             <Route path="/blog/:categoryId" element={<BlogCategory />} />
-             <Route path="/blog/:categoryId/:articleId" element={<BlogArticle />} />
-            <Route path="/blog" element={<BlogListing />} />
+              <Route path="/" element={<HomePage />} />
+              <Route path="/project/:projectId" element={<ProjectDetail />} />
+              <Route path="/project" element={<ProjectListing />} />
+              <Route path="/blog/:categoryId" element={<BlogCategory />} />
+              <Route path="/blog/:categoryId/:articleId" element={<BlogArticle />} />
+              <Route path="/blog" element={<BlogListing />} />
             </Routes>
           </motion.div>
         )}
       </div>
-    </Router>
+    </RouterComponent>
   );
 }
 
