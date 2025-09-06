@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, ExternalLink, Calendar, MapPin } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import Breadcrumb from './Breadcrumb';
 
 const ProjectDetail: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -326,6 +327,10 @@ Les muons sont des particules instables qui se désintègrent avec un temps de v
         className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-700"
       >
         <div className="container mx-auto px-6 py-4">
+          <div className="max-w-4xl mx-auto mb-4">
+            <Breadcrumb />
+          </div>
+
           <motion.button
             onClick={handleBackClick}
             whileHover={{ scale: 1.05 }}

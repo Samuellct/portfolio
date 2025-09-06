@@ -13,8 +13,10 @@ import Footer from './components/Footer';
 import LoadingScreen from './components/LoadingScreen';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import ProjectDetail from './components/ProjectDetail';
+import ProjectListing from './components/ProjectListing';
 import BlogCategory from './components/BlogCategory';
 import BlogArticle from './components/BlogArticle';
+import BlogListing from './components/BlogListing';
 import { useLocation } from 'react-router-dom';
 import './i18n';
 
@@ -75,10 +77,12 @@ function App() {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/project/:projectId" element={<ProjectDetail />} />
+             <Route path="/" element={<HomePage />} />
+             <Route path="/project/:projectId" element={<ProjectDetail />} />
+            <Route path="/project" element={<ProjectListing />} />
              <Route path="/blog/:categoryId" element={<BlogCategory />} />
              <Route path="/blog/:categoryId/:articleId" element={<BlogArticle />} />
+            <Route path="/blog" element={<BlogListing />} />
             </Routes>
           </motion.div>
         )}

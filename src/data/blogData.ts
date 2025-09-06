@@ -285,3 +285,60 @@ export const getCategoryById = (categoryId: string): CategoryData | null => {
 export const getAllCategories = (): CategoryData[] => {
   return Object.values(categoriesData);
 };
+
+// Get related articles based on category and keywords
+export const getRelatedArticles = (currentArticleId: string, categoryId: string, maxResults: number = 3): ArticleData[] => {
+  const allArticles: ArticleData[] = [];
+  
+  // Collect all articles from all categories
+  Object.keys(articlesData).forEach(catId => {
+    Object.values(articlesData[catId]).forEach(article => {
+      allArticles.push(article);
+    });
+  });
+  
+  // Filter out current article
+  const otherArticles = allArticles.filter(article => article.id !== currentArticleId);
+  
+  // Get current article for comparison
+  const currentArticle = getArticleById(categoryId, currentArticleId);
+  if (!currentArticle) return [];
+  
+  // Score articles based on relevance
+  const scoredArticles = otherArticles.map(article => {
+    let score = 0;
+    
+    // Same category gets highest priority
+    if (article.category === currentArticle.category) {
+      score += 10;
+    }
+    
+    // Check for common keywords
+    const currentKeywords = currentArticle.keywords.map(k => k.toLowerCase());
+    const articleKeywords = article.keywords.map(k => k.toLowerCase());
+    
+    articleKeywords.forEach(keyword => {
+      if (currentKeywords.includes(keyword)) {
+        score += 5;
+      }
+    });
+    
+    // Check for similar words in titles (simple matching)
+    const currentTitleWords = currentArticle.title.toLowerCase().split(' ');
+    const articleTitleWords = article.title.toLowerCase().split(' ');
+    
+    articleTitleWords.forEach(word => {
+      if (word.length > 3 && currentTitleWords.includes(word)) {
+        score += 2;
+      }
+    });
+    
+    return { article, score };
+  });
+  
+  // Sort by score (highest first) and return top results
+  return scoredArticles
+    .sort((a, b) => b.score - a.score)
+    .slice(0, maxResults)
+    .map(item => item.article);
+};

@@ -35,6 +35,10 @@ const Blog: React.FC = () => {
     navigate(`/blog/${categoryId}`);
   };
 
+  const handleViewAllClick = () => {
+    navigate('/blog');
+  };
+
   return (
     <section id="blog" className="py-20 bg-slate-800/50">
       <div className="container mx-auto px-6" ref={ref}>
@@ -87,6 +91,14 @@ const Blog: React.FC = () => {
             <p className="text-slate-300 max-w-2xl mx-auto">
               Les articles sont en cours de rédaction. Chaque catégorie proposera bientôt des contenus riches et détaillés sur mes expériences et découvertes.
             </p>
+            <motion.button
+              onClick={handleViewAllClick}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors duration-300"
+            >
+              Voir tous les articles
+            </motion.button>
           </motion.div>
         </motion.div>
       </div>

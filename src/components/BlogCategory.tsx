@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Calendar, Clock, ArrowRight, Mountain, Microscope, Code2 } from 'lucide-react';
 import FloatingNav from './FloatingNav';
+import Breadcrumb from './Breadcrumb';
 import { getCategoryById, getArticlesByCategory, getArticlePreview } from '../data/blogData';
 
 const BlogCategory: React.FC = () => {
@@ -63,6 +64,10 @@ const BlogCategory: React.FC = () => {
         className="bg-slate-900/95 backdrop-blur-md border-b border-slate-700"
       >
         <div className="container mx-auto px-6 py-8 pt-16 md:pt-8">
+          <div className="max-w-4xl mx-auto">
+            <Breadcrumb />
+          </div>
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

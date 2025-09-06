@@ -1,13 +1,16 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Calendar, Clock, Heart, MessageCircle, User, Tag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import FloatingNav from './FloatingNav';
 import { getArticleById, type ArticleData } from '../data/blogData';
+import Breadcrumb from './Breadcrumb';
+import { getArticleById, getRelatedArticles, getArticlePreview, articlesData, type ArticleData } from '../data/blogData';
 
 const BlogArticle: React.FC = () => {
   const { categoryId, articleId } = useParams<{ categoryId: string; articleId: string }>();
+  const navigate = useNavigate();
   const [likes, setLikes] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
   const [comments, setComments] = useState<Array<{ id: string; author: string; content: string; date: string }>>([]);
@@ -22,6 +25,11 @@ const BlogArticle: React.FC = () => {
     if (!categoryId || !articleId) return null;
     return getArticleById(categoryId, articleId);
   }, [categoryId, articleId]);
+  
+  const relatedArticles = useMemo(() => {
+    if (!articleData || !categoryId) return [];
+    return getRelatedArticles(articleData.id, categoryId, 3);
+  }, [articleData, categoryId]);
 
   // Charger likes & commentaires depuis les API
   useEffect(() => {
@@ -287,12 +295,100 @@ const BlogArticle: React.FC = () => {
               </div>
             </div>
           </motion.div>
+		  
+		  {/* Related Articles Section */}
+          {relatedArticles.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.2 }}
+              className="bg-slate-800/30 p-8 rounded-xl border border-slate-700 mb-16"
+            >
+              <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                  </svg>
+                </div>
+                Articles similaires
+              </h3>
+              
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {relatedArticles.map((article, index) => (
+                  <motion.div
+                    key={article.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 1.4 + index * 0.1 }}
+                    whileHover={{ y: -5, scale: 1.02 }}
+                    onClick={() => {
+                      // Find the category for this article
+                      let articleCategoryId = '';
+                      Object.keys(articlesData).forEach(catId => {
+                        if (articlesData[catId][article.id]) {
+                          articleCategoryId = catId;
+                        }
+                      });
+                      navigate(`/blog/${articleCategoryId}/${article.id}`);
+                    }}
+                    className="bg-slate-700/30 rounded-lg border border-slate-600 hover:border-blue-500/50 transition-all duration-300 cursor-pointer group overflow-hidden"
+                  >
+                    <div className="relative">
+                      <img
+                        src={article.image}
+                        alt={article.title}
+                        className="w-full h-32 object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+                      <div className="absolute top-2 left-2">
+                        <span className="px-2 py-1 text-xs bg-blue-600/80 text-blue-100 rounded-full font-medium">
+                          {article.category}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="p-4">
+                      <h4 className="font-semibold text-white mb-2 line-clamp-2 group-hover:text-blue-400 transition-colors duration-300">
+                        {article.title}
+                      </h4>
+                      
+                      <div className="flex items-center gap-3 text-xs text-slate-400 mb-3">
+                        <div className="flex items-center gap-1">
+                          <Calendar size={12} />
+                          <span>{article.date}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock size={12} />
+                          <span>{article.readTime}</span>
+                        </div>
+                      </div>
+                      
+                      <p className="text-slate-400 text-sm line-clamp-2 mb-3">
+                        {getArticlePreview(article.content)}
+                      </p>
+                      
+                      <div className="flex flex-wrap gap-1">
+                        {article.keywords.slice(0, 2).map((keyword) => (
+                          <span
+                            key={keyword}
+                            className="px-2 py-1 bg-slate-600/50 text-slate-400 text-xs rounded-full"
+                          >
+                            {keyword}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
 
           {/* Comments Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.2 }}
+            transition={{ duration: 0.6, delay: 1.4 }}
             className="bg-slate-800/30 p-8 rounded-xl border border-slate-700"
           >
             <div className="flex items-center gap-2 mb-8">
