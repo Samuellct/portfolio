@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Calendar, Clock, Heart, MessageCircle, User, Tag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import FloatingNav from './FloatingNav';
@@ -8,7 +8,6 @@ import { getArticleById, type ArticleData } from '../data/blogData';
 
 const BlogArticle: React.FC = () => {
   const { categoryId, articleId } = useParams<{ categoryId: string; articleId: string }>();
-  const navigate = useNavigate();
   const [likes, setLikes] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
   const [comments, setComments] = useState<Array<{ id: string; author: string; content: string; date: string }>>([]);
@@ -24,26 +23,26 @@ const BlogArticle: React.FC = () => {
     return getArticleById(categoryId, articleId);
   }, [categoryId, articleId]);
 
+  // Charger likes & commentaires depuis les API
   useEffect(() => {
-    if (articleData) {
-      setLikes(articleData.likes);
-      // Simulate some existing comments
-      setComments([
-        {
-          id: '1',
-          author: 'Marie Dubois',
-          content: 'Excellent article ! Très instructif et bien documenté.',
-          date: '12 Janvier 2025'
-        },
-        {
-          id: '2',
-          author: 'Pierre Martin',
-          content: 'Merci pour ce partage d\'expérience, cela m\'aide beaucoup pour mon propre projet.',
-          date: '11 Janvier 2025'
-        }
-      ]);
-    }
+    if (!articleData) return;
+    const load = async () => {
+      try {
+        const [likesRes, commentsRes] = await Promise.all([
+          fetch(`/api/likes/${articleData.id}`),
+          fetch(`/api/comments/${articleData.id}`),
+        ]);
+        const likesJson = await likesRes.json();
+        const commentsJson = await commentsRes.json();
+        setLikes(typeof likesJson?.count === 'number' ? likesJson.count : 0);
+        setComments(Array.isArray(commentsJson?.items) ? commentsJson.items : []);
+      } catch (e) {
+        console.error('Erreur de chargement likes/commentaires', e);
+      }
+    };
+    load();
   }, [articleData]);
+
 
   if (!articleData) {
     return (
@@ -55,28 +54,69 @@ const BlogArticle: React.FC = () => {
       </div>
     );
   }
-
-  const handleLike = () => {
-    if (!hasLiked) {
-      setLikes(prev => prev + 1);
-      setHasLiked(true);
+  
+  const handleLike = async () => {
+    if (hasLiked || !articleData) return;
+    // Optimistic UI
+    setHasLiked(true);
+    setLikes((prev) => prev + 1);
+    try {
+      const res = await fetch(`/api/likes/${articleData.id}`, { method: 'POST' });
+      const json = await res.json();
+      if (typeof json?.count === 'number') setLikes(json.count);
+    } catch (e) {
+      console.error('Erreur like', e);
+      // rollback soft si échec
+      setHasLiked(false);
+      setLikes((prev) => Math.max(0, prev - 1));
     }
   };
+  
+   // Formatage date → FR + fuseau Paris
+  const dtf = new Intl.DateTimeFormat('fr-FR', {
+    dateStyle: 'long',
+    timeStyle: 'short',
+    timeZone: 'Europe/Paris',
+    hour12: false,
+  });
+  const formatCommentDate = (s: string) => {
+    const d = new Date(s);
+    return isNaN(d.getTime()) ? s : dtf.format(d);
+  };
 
-  const handleCommentSubmit = (e: React.FormEvent) => {
+  const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newComment.trim() && commentAuthor.trim()) {
-      const comment = {
-        id: Date.now().toString(),
-        author: commentAuthor,
-        content: newComment,
-        date: new Date().toLocaleDateString('fr-FR')
-      };
-      setComments(prev => [comment, ...prev]);
-      setNewComment('');
-      setCommentAuthor('');
+	if (!articleData) return;
+	if (!newComment.trim() || !commentAuthor.trim()) return;
+	
+	const optimistic = {
+      id: `tmp-${Date.now()}`,		
+      author: commentAuthor,		
+      content: newComment,
+      date: new Date().toISOString(),
+    };
+    // Optimistic UI
+    setComments((prev) => [optimistic, ...prev]);
+    setNewComment('');
+    setCommentAuthor('');
+
+    try {
+      const res = await fetch(`/api/comments/${articleData.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ author: optimistic.author, content: optimistic.content }),
+      });
+      const json = await res.json();
+      if (json?.item?.id) {
+        // remplace l’entrée optimiste par la version serveur
+        setComments((prev) => [json.item, ...prev.filter((c) => c.id !== optimistic.id)]);
+      }
+    } catch (e) {
+      console.error('Erreur post commentaire', e);
+      // rollback si échec
+      setComments((prev) => prev.filter((c) => c.id !== optimistic.id));
     }
-  };
+   };
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -304,7 +344,9 @@ const BlogArticle: React.FC = () => {
                 >
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-semibold text-white">{comment.author}</h4>
-                    <span className="text-sm text-slate-400">{comment.date}</span>
+                    <span className="text-sm text-slate-400">
+					  {formatCommentDate(comment.date)}
+                    </span>
                   </div>
                   <p className="text-slate-300 leading-relaxed">{comment.content}</p>
                 </motion.div>
