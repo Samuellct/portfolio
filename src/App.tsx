@@ -54,17 +54,8 @@ const HomePage: React.FC = () => {
 };
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
+
   const { i18n } = useTranslation();
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
 
   const RouterComponent = import.meta.env.PROD ? HashRouter : BrowserRouter;
   return (
