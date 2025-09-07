@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, HashRouter, Routes, Route } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -10,7 +10,6 @@ import Projects from './components/Projects';
 import Blog from './components/Blog';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import LoadingScreen from './components/LoadingScreen';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import ProjectDetail from './components/ProjectDetail';
 import ProjectListing from './components/ProjectListing';
@@ -60,25 +59,22 @@ function App() {
   const RouterComponent = import.meta.env.PROD ? HashRouter : BrowserRouter;
   return (
     <RouterComponent basename={import.meta.env.BASE_URL}>
-       <div className="relative">
-         <AnimatePresence>{isLoading && <LoadingScreen />}</AnimatePresence>
+      <div className="relative">
 
-        {!isLoading && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/project/:projectId" element={<ProjectDetail />} />
-              <Route path="/project" element={<ProjectListing />} />
-              <Route path="/blog/:categoryId" element={<BlogCategory />} />
-              <Route path="/blog/:categoryId/:articleId" element={<BlogArticle />} />
-              <Route path="/blog" element={<BlogListing />} />
-            </Routes>
-          </motion.div>
-        )}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/project/:projectId" element={<ProjectDetail />} />
+            <Route path="/project" element={<ProjectListing />} />
+            <Route path="/blog/:categoryId" element={<BlogCategory />} />
+            <Route path="/blog/:categoryId/:articleId" element={<BlogArticle />} />
+            <Route path="/blog" element={<BlogListing />} />
+          </Routes>
+        </motion.div>
       </div>
     </RouterComponent>
   );
