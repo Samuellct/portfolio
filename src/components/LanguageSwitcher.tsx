@@ -11,6 +11,9 @@ const LanguageSwitcher: React.FC = () => {
     i18n.changeLanguage(newLang);
   };
 
+  const nextLabel = i18n.language === 'fr' ? 'Switch language to English' : 'Passer le site en français';
+  const nextCode  = i18n.language === 'fr' ? 'EN' : 'FR';
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
@@ -19,15 +22,26 @@ const LanguageSwitcher: React.FC = () => {
       className="fixed top-6 right-6 z-50"
     >
       <motion.button
+        type="button"
         onClick={toggleLanguage}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="flex items-center gap-2 px-4 py-2 bg-slate-800/90 backdrop-blur-md border border-slate-700 rounded-lg text-slate-300 hover:text-white hover:border-blue-500/50 transition-all duration-300"
+        aria-label={nextLabel}
+        title={nextLabel}
+        className="
+          inline-flex items-center gap-2
+          px-3 py-3 md:px-4 md:py-3
+          min-w-[44px] min-h-[44px]
+          rounded-lg border border-slate-700
+          bg-slate-800/90 backdrop-blur-md
+          text-slate-200 hover:text-white hover:border-blue-500/50
+          transition-all duration-300
+          focus-visible:outline focus-visible:outline-2
+          focus-visible:outline-offset-2 focus-visible:outline-sky-500
+        "
       >
-        <Globe size={16} />
-        <span className="font-medium">
-          {i18n.language === 'fr' ? 'EN' : 'FR'}
-        </span>
+        <Globe size={16} aria-hidden="true" focusable="false" />
+        <span className="font-medium">{nextCode}</span>
       </motion.button>
     </motion.div>
   );
