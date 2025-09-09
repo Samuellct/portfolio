@@ -65,14 +65,7 @@ const Contact: React.FC = () => {
     });
   };
 
-  const contactInfo = [
-    {
-      icon: <Mail size={20} />,
-      label: t('contact.labels.email'),
-      value: 'samuel.lecomte37@gmail.com',
-      href: 'mailto:samuel.lecomte37@gmail.com',
-    },
-  ];
+  const contactInfo = [];
 
   const socialLinks = [
     {
