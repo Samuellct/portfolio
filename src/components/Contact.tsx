@@ -65,7 +65,8 @@ const Contact: React.FC = () => {
     });
   };
 
-  const contactInfo = [];
+  const contactInfo = [
+  ];
 
   const socialLinks = [
     {
@@ -95,71 +96,90 @@ const Contact: React.FC = () => {
           <h2 className="text-4xl font-bold text-center mb-12">{t('contact.title')}</h2>
           
           <div className="grid lg:grid-cols-2 gap-12">
-            {/* Contact Information */}
+            {/* Contact Introduction and Social Links */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <p className="text-gray-300 text-lg mb-8 leading-relaxed">
-                {t('contact.subtitle')}
-              </p>
-
-              <div className="space-y-6 mb-8">
-                {contactInfo.map((item) => (
-                  <motion.a
-                    key={item.label}
-                    href={item.href}
-                    whileHover={{ x: 10 }}
-                    className="flex items-center gap-4 text-gray-300 hover:text-white transition-colors duration-300 group"
-                  >
-                    <div className="flex items-center justify-center w-12 h-12 bg-gray-700 rounded-lg group-hover:bg-blue-600 transition-colors duration-300">
-                      {item.icon}
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-400">{item.label}</p>
-                      <p className="font-medium">{item.value}</p>
-                    </div>
-                  </motion.a>
-                ))}
+              <div className="text-center lg:text-left">
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  {t('contact.getInTouch')}
+                </h3>
+                <p className="text-gray-300 text-lg mb-8 leading-relaxed">
+                  {t('contact.subtitle')}
+                </p>
               </div>
 
-              <div className="flex gap-4">
-                {socialLinks.map((social) => (
-                  <motion.a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.1, y: -2 }}
-                   transition={{ duration: 0.2 }}
-                    className={`flex items-center justify-center w-12 h-12 bg-gray-700 text-gray-300 rounded-lg transition-all duration-300 ${social.hoverClass || 'hover:bg-blue-600 hover:text-white'}`}
-                    style={{
-                      '--hover-bg': social.hoverStyle?.backgroundColor || undefined,
-                    } as React.CSSProperties}
-                    onMouseEnter={(e) => {
-                      if (social.hoverStyle?.backgroundColor) {
-                        (e.target as HTMLElement).style.backgroundColor = social.hoverStyle.backgroundColor;
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (social.hoverStyle?.backgroundColor) {
-                        (e.target as HTMLElement).style.backgroundColor = '';
-                      }
-                    }}
-                  >
-                    {social.icon}
-                  </motion.a>
-                ))}
+              {/* Enhanced Social Links Section */}
+              <div className="bg-slate-800/30 p-6 rounded-xl border border-slate-700 mb-8">
+                <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                    <rect x="2" y="9" width="4" height="12"/>
+                    <circle cx="4" cy="4" r="2"/>
+                  </svg>
+                  Retrouvez-moi sur
+                </h4>
+                <div className="grid grid-cols-2 gap-4">
+                  {socialLinks.map((social) => (
+                    <motion.a
+                      key={social.label}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      transition={{ duration: 0.2 }}
+                      className={`flex items-center gap-3 p-4 bg-gray-700/50 text-gray-300 rounded-lg transition-all duration-300 ${social.hoverClass || 'hover:bg-blue-600 hover:text-white'} group`}
+                      style={{
+                        '--hover-bg': social.hoverStyle?.backgroundColor || undefined,
+                      } as React.CSSProperties}
+                      onMouseEnter={(e) => {
+                        if (social.hoverStyle?.backgroundColor) {
+                          (e.target as HTMLElement).style.backgroundColor = social.hoverStyle.backgroundColor;
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (social.hoverStyle?.backgroundColor) {
+                          (e.target as HTMLElement).style.backgroundColor = '';
+                        }
+                      }}
+                    >
+                      <div className="flex-shrink-0">
+                        {social.icon}
+                      </div>
+                      <div>
+                        <p className="font-medium group-hover:text-white transition-colors duration-300">
+                          {social.label}
+                        </p>
+                        <p className="text-sm opacity-75">
+                          {social.label === 'GitHub' ? 'Mes projets' : 'Mon profil professionnel'}
+                        </p>
+                      </div>
+                    </motion.a>
+                  ))}
+                </div>
               </div>
+
             </motion.div>
 
-            {/* Contact Form */}
+            {/* Contact Form - Now more prominent */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.4 }}
+              className="lg:order-first"
             >
+              <div className="text-center lg:text-left mb-6">
+                <h3 className="text-2xl font-bold text-white mb-2 flex items-center justify-center lg:justify-start gap-2">
+                  <Mail size={24} className="text-blue-400" />
+                  Envoyez-moi un message
+                </h3>
+                <p className="text-gray-400">
+                  Remplissez le formulaire ci-dessous et je vous répondrai rapidement
+                </p>
+              </div>
+
               {/* Success Message */}
               {submitStatus === 'success' && (
                 <motion.div
@@ -190,7 +210,7 @@ const Contact: React.FC = () => {
                 </motion.div>
               )}
 
-              <form onSubmit={handleSubmit} className="bg-gray-900/50 p-8 rounded-lg border border-gray-700">
+              <form onSubmit={handleSubmit} className="bg-gray-900/50 p-8 rounded-lg border border-gray-700 shadow-xl">
                 <div className="grid md:grid-cols-2 gap-6 mb-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
