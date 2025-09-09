@@ -175,7 +175,11 @@
       "subject": "Sujet",
       "message": "Message",
       "send": "Envoyer",
-      "sending": "Envoi en cours..."
+      "sending": "Envoi en cours...",
+      "success": "Message envoyé avec succès !",
+      "successDescription": "Je vous répondrai dans les plus brefs délais.",
+      "error": "Erreur lors de l'envoi",
+      "retry": "Réessayer"
     },
     "info": {
       "email": "samuel.lecomte@etu.uca.fr",

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 // Added missing Code icon import
 import { Code } from 'lucide-react';
+import { getAllProjects, getProjectPreview } from '../data/projectData';
 
 const Projects: React.FC = () => {
   const [ref, inView] = useInView({
@@ -25,6 +26,9 @@ const Projects: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [filter, setFilter] = useState<'all' | 'academic' | 'personal'>('all');
+
+  // Get projects from centralized data
+  const allProjects = getAllProjects();
 
   const getProjectIcon = (type: string) => {
     switch (type) {
@@ -45,92 +49,36 @@ const Projects: React.FC = () => {
     }
   };
 
-  const projects = [
-    // Personal Projects
-    {
-      id: 'home-server',
-      title: t('projects.personalProjects.homeServer.title'),
-      description: t('projects.personalProjects.homeServer.description'),
-      technologies: t('projects.personalProjects.homeServer.tech'),
-      category: 'personal' as const,
-      icon: 'server',
-      image:
-        'https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      id: 'home-automation',
-      title: t('projects.personalProjects.homeAutomation.title'),
-      description: t('projects.personalProjects.homeAutomation.description'),
-      technologies: t('projects.personalProjects.homeAutomation.tech'),
-      category: 'personal' as const,
-      icon: 'home',
-      image:
-        'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    // Academic Projects
-    {
-      id: 'data-analysis',
-      title: t('projects.academicProjects.dataAnalysis.title'),
-      description: t('projects.academicProjects.dataAnalysis.description'),
-      technologies: t('projects.academicProjects.dataAnalysis.tech'),
-      category: 'academic' as const,
-      icon: 'chart',
-      image:
-        'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      id: 'collective-phenomena',
-      title: t('projects.academicProjects.collectivePhenomena.title'),
-      description: t(
-        'projects.academicProjects.collectivePhenomena.description'
-      ),
-      technologies: t('projects.academicProjects.collectivePhenomena.tech'),
-      category: 'academic' as const,
-      icon: 'atom',
-      image:
-        'https://images.pexels.com/photos/355948/pexels-photo-355948.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      id: 'quantum-mechanics',
-      title: t('projects.academicProjects.quantumMechanics.title'),
-      description: t('projects.academicProjects.quantumMechanics.description'),
-      technologies: t('projects.academicProjects.quantumMechanics.tech'),
-      category: 'academic' as const,
-      icon: 'cpu',
-      image:
-        'https://images.pexels.com/photos/2004161/pexels-photo-2004161.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      id: 'arduino',
-      title: t('projects.academicProjects.arduino.title'),
-      description: t('projects.academicProjects.arduino.description'),
-      technologies: t('projects.academicProjects.arduino.tech'),
-      category: 'academic' as const,
-      icon: 'cpu',
-      image:
-        'https://images.pexels.com/photos/2582937/pexels-photo-2582937.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      id: 'labview',
-      title: t('projects.academicProjects.labview.title'),
-      description: t('projects.academicProjects.labview.description'),
-      technologies: t('projects.academicProjects.labview.tech'),
-      category: 'academic' as const,
-      icon: 'chart',
-      image:
-        'https://images.pexels.com/photos/2004161/pexels-photo-2004161.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      id: 'particle-physics',
-      title: t('projects.academicProjects.particlePhysics.title'),
-      description: t('projects.academicProjects.particlePhysics.description'),
-      technologies: t('projects.academicProjects.particlePhysics.tech'),
-      category: 'academic' as const,
-      icon: 'atom',
-      image:
-        'https://images.pexels.com/photos/2004161/pexels-photo-2004161.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-  ];
+  // Transform projects data for display
+  const projects = allProjects.map(project => ({
+    id: project.id,
+    title: project.title,
+    description: getProjectPreview(project.description),
+    technologies: project.technologies,
+    category: project.category,
+    icon: getIconType(project),
+    image: project.image,
+  }));
+
+  // Helper function to determine icon type based on project data
+  function getIconType(project: any) {
+    if (project.technologies.includes('Proxmox') || project.technologies.includes('TrueNAS')) {
+      return 'server';
+    }
+    if (project.technologies.includes('Home Assistant') || project.technologies.includes('IoT')) {
+      return 'home';
+    }
+    if (project.technologies.includes('ROOT') || project.technologies.includes('Physique des particules')) {
+      return 'atom';
+    }
+    if (project.technologies.includes('Arduino') || project.technologies.includes('LabVIEW')) {
+      return 'cpu';
+    }
+    if (project.technologies.includes('Python') && project.technologies.includes('Analyse statistique')) {
+      return 'chart';
+    }
+    return 'code';
+  }
 
   const filteredProjects = projects.filter(
     (project) => filter === 'all' || project.category === filter
@@ -332,7 +280,7 @@ const Projects: React.FC = () => {
                   </p>
 
                   <div className="flex flex-wrap gap-2">
-                    {(project.technologies as string[]).map((tech) => (
+                    {project.technologies.map((tech) => (
                       <span
                         key={tech}
                         className="px-3 py-1 bg-slate-700/80 text-xs rounded-full text-white font-medium border border-slate-600"

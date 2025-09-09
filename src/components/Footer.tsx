@@ -1,11 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
-import { Heart } from 'lucide-react';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
-  const { t } = useTranslation();
 
   return (
     <footer className="bg-gray-900 border-t border-gray-800">
@@ -17,15 +14,7 @@ const Footer: React.FC = () => {
           className="text-center"
         >
           <p className="text-gray-400 flex items-center justify-center gap-2">
-            © {currentYear} Samuel Lecomte. {t('footer.madeWith')}
-            <motion.span
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
-              className="text-red-400"
-            >
-              <Heart size={16} fill="currentColor" />
-            </motion.span>
-            et beaucoup de café.
+            © {currentYear} Samuel Lecomte        
           </p>
         </motion.div>
       </div>

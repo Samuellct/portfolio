@@ -113,7 +113,7 @@ L'utilité des centres de calcul dépasse largement le champ de la physique des 
       image: 'https://images.pexels.com/photos/2004161/pexels-photo-2004161.jpeg?auto=compress&cs=tinysrgb&w=1200',
       imageCaption: 'Centre de calcul haute performance - Infrastructure moderne pour la recherche scientifique',
       author: 'Samuel Lecomte',
-      category: 'Physique computationnelle',
+      category: 'Science & Découvertes',
       keywords: ['physique des particules', 'centres de calcul', 'big data scientifique', 'technologies distribuées'],
       likes: 42
     }
@@ -167,7 +167,7 @@ Cette expérience confirme que le trail en montagne est autant un défi physique
       image: 'https://images.pexels.com/photos/2422915/pexels-photo-2422915.jpeg?auto=compress&cs=tinysrgb&w=1200',
       imageCaption: 'Vue panoramique sur le massif du Mont-Blanc depuis le sentier de trail',
       author: 'Samuel Lecomte',
-      category: 'Trail',
+      category: 'Aventures & Défis',
       keywords: ['trail running', 'mont-blanc', 'course en montagne', 'endurance'],
       likes: 28
     }
@@ -225,16 +225,16 @@ Après six mois d'utilisation, le serveur Proxmox fonctionne de manière stable 
 - Un conteneur LXC pour Home Assistant
 
 Cette infrastructure m'a permis d'acquérir une expérience pratique précieuse en administration système et virtualisation, compétences directement transférables dans un contexte professionnel.`,
-      date: '5 Janvier 2025',
-      readTime: '15 min',
-      image: 'https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=1200',
-      imageCaption: 'Serveur rack dans un centre de données moderne',
-      author: 'Samuel Lecomte',
-      category: 'Infrastructure',
-      keywords: ['proxmox', 'virtualisation', 'serveur domestique', 'truenas'],
-      likes: 35
-    }
-  }
+      date: '5 Janvier 2025',
+      readTime: '15 min',
+      image: 'https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      imageCaption: 'Serveur rack dans un centre de données moderne',
+      author: 'Samuel Lecomte',
+      category: 'Tech & Implémentations',
+      keywords: ['proxmox', 'virtualisation', 'serveur domestique', 'truenas'],
+      likes: 35
+    }
+  }
 };
 
 // Categories data

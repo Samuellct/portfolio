@@ -73,9 +73,9 @@ const Education: React.FC = () => {
                   {/* Timeline dot */}
                   <div className="absolute left-6 w-4 h-4 bg-blue-500 rounded-full border-4 border-slate-900 hidden md:block" />
 
-                  <div className="md:ml-20 bg-slate-800/50 p-8 rounded-xl border border-slate-700 hover:border-blue-500/50 transition-all duration-300">
+                  <div className="md:ml-20 bg-slate-800/50 p-8 rounded-xl border border-slate-700 hover:border-blue-500/50 transition-all duration-300 min-w-0">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                      <h3 className="text-xl font-semibold text-white mb-2 md:mb-0">
+                      <h3 className="text-xl font-semibold text-white mb-2 md:mb-0 md:flex-1 md:pr-4">
                         {edu.title}
                         {edu.current && (
                           <span className="ml-3 px-3 py-1 bg-blue-600/20 text-blue-400 text-sm rounded-full">
@@ -83,7 +83,7 @@ const Education: React.FC = () => {
                           </span>
                         )}
                       </h3>
-                      <div className="flex items-center gap-2 text-slate-400">
+                      <div className="flex items-center gap-2 text-slate-400 md:flex-shrink-0 md:min-w-max">
                         <Calendar size={16} />
                         <span className="text-sm">{edu.period}</span>
                       </div>

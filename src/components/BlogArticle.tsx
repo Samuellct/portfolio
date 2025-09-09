@@ -4,7 +4,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Calendar, Clock, Heart, MessageCircle, User, Tag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import FloatingNav from './FloatingNav';
-import { getArticleById, type ArticleData } from '../data/blogData';
 import Breadcrumb from './Breadcrumb';
 import { getArticleById, getRelatedArticles, getArticlePreview, articlesData, type ArticleData } from '../data/blogData';
 

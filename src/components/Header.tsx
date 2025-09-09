@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Globe } from 'lucide-react';
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [currentSection, setCurrentSection] = useState('home');
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -80,6 +80,19 @@ const Header: React.FC = () => {
     setIsOpen(false);
   };
 
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'fr' ? 'en' : 'fr';
+    i18n.changeLanguage(newLang);
+  };
+
+  const getLanguageLabel = () => {
+    return i18n.language === 'fr' ? 'EN' : 'FR';
+  };
+
+  const getLanguageTitle = () => {
+    return i18n.language === 'fr' ? 'Switch language to English' : 'Passer le site en français';
+  };
+
   const navItems = [
     { name: t('nav.home'), id: 'home' },
     { name: t('nav.about'), id: 'about' },
@@ -91,43 +104,97 @@ const Header: React.FC = () => {
 
   const shouldShowFloating = isHomePage ? scrolled && currentSection !== 'home' : true;
 
+  // Animation variants for smooth transitions
+  const headerVariants = {
+    fixed: {
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+        mass: 0.8
+      }
+    },
+    floating: {
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+        mass: 0.8
+      }
+    }
+  };
+
+  const navVariants = {
+    fixed: {
+      borderRadius: 0,
+      backgroundColor: "rgba(15, 23, 42, 0)",
+      backdropFilter: "blur(0px)",
+      boxShadow: "0 0 0 0 rgba(0, 0, 0, 0)",
+      border: "1px solid rgba(51, 65, 85, 0)",
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 40,
+        mass: 0.6
+      }
+    },
+    floating: {
+      borderRadius: 9999,
+      backgroundColor: "rgba(15, 23, 42, 0.8)",
+      backdropFilter: "blur(12px)",
+      boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+      border: "1px solid rgba(51, 65, 85, 0.5)",
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 40,
+        mass: 0.6
+      }
+    }
+  };
   return (
     <motion.header
       initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-      // wrapper fixed plein écran ; pas de bg ici
-      className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
-        scrolled ? 'pointer-events-none' : ''
-      }`}
+      animate="fixed"
+      variants={headerVariants}
+      className="fixed inset-x-0 top-0 z-40"
+      style={{
+        // Prevent pointer events on the header wrapper, but allow on nav
+        pointerEvents: 'none'
+      }}
     >
-      {/* conteneur centré ; devient "pilule" en desktop quand scrolled */}
-      <div
-        className={[
-          'mx-auto px-3 transition-all duration-300',
-          shouldShowFloating ? 'md:max-w-4xl md:mt-6' : 'md:max-w-7xl',
-          'w-full',
-          // Centrage de la navigation flottante
-          shouldShowFloating ? 'md:mx-auto' : '',
-        ].join(' ')}
+      {/* Container with smooth width and positioning transitions */}
+      <motion.div
+        className="mx-auto px-3 w-full"
+        animate={{
+          maxWidth: shouldShowFloating ? '56rem' : '80rem', // 4xl vs 7xl
+          marginTop: shouldShowFloating ? '1.5rem' : '0rem',
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 35,
+          mass: 0.7
+        }}
       >
-        <nav
-          className={[
-            'pointer-events-auto', // réactive les clics
-            'px-4 py-3', // padding nav
-            'transition-all duration-300',
-            'focus:outline-none', // supprime l'outline par défaut
-            shouldShowFloating
-              ? // style "pilule" uniquement en desktop, utiliser backdrop-blur-md si on veut plus de lisibilite
-                'md:rounded-full md:bg-slate-900/80 md:backdrop-blur md:shadow-xl md:border md:border-slate-700/50'
-              : '',
-          ].join(' ')}
-          style={{ outline: 'none' }} // force la suppression de l'outline
+        <motion.nav
+          className="px-4 py-3 focus:outline-none"
+          style={{ 
+            outline: 'none',
+            pointerEvents: 'auto' // Re-enable pointer events on nav
+          }}
+          animate={shouldShowFloating ? 'floating' : 'fixed'}
+          variants={navVariants}
         >
           <div className="flex items-center justify-between">
             {/* Logo */}
             <motion.div
               whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className="text-2xl font-bold cursor-pointer bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
               onClick={() => {
                 if (isHomePage) {
@@ -147,21 +214,37 @@ const Header: React.FC = () => {
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
                   whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.95 }}
                   className="relative text-slate-300 hover:text-white transition-colors duration-300 group font-semibold"
                 >
                   {item.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300" />
+                  <span 
+                    className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"
+                  />
                 </motion.button>
               ))}
+              
+              {/* Language Switcher - Desktop */}
+              <motion.button
+                onClick={toggleLanguage}
+                whileHover={{ y: -2, scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                title={getLanguageTitle()}
+                className="relative flex items-center gap-2 px-3 py-2 text-slate-300 hover:text-white transition-colors duration-300 group font-semibold border border-slate-600 hover:border-blue-500/50 rounded-lg"
+              >
+                <Globe size={16} />
+                <span className="text-sm">{getLanguageLabel()}</span>
+              </motion.button>
             </div>
 
             {/* Mobile Menu Button */}
-            <button
+            <motion.button
               onClick={() => setIsOpen(!isOpen)}
+              whileTap={{ scale: 0.95 }}
               className="md:hidden p-2"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            </motion.button>
           </div>
 
           {/* Mobile Navigation */}
@@ -170,6 +253,7 @@ const Header: React.FC = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
               className="md:hidden mt-4 pb-4"
             >
               {navItems.map((item, index) => (
@@ -179,15 +263,29 @@ const Header: React.FC = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
+                  whileTap={{ scale: 0.95 }}
                   className="block w-full text-left py-2 text-slate-300 hover:text-white transition-colors duration-300 font-semibold"
                 >
                   {item.name}
                 </motion.button>
               ))}
+              
+              {/* Language Switcher - Mobile */}
+              <motion.button
+                onClick={toggleLanguage}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: navItems.length * 0.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-3 w-full text-left py-2 text-slate-300 hover:text-white transition-colors duration-300 font-semibold border-t border-slate-700 pt-4 mt-2"
+              >
+                <Globe size={18} />
+                <span>{getLanguageTitle()}</span>
+              </motion.button>
             </motion.div>
           )}
-        </nav>
-      </div>
+        </motion.nav>
+      </motion.div>
     </motion.header>
   );
 };

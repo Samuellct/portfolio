@@ -10,7 +10,6 @@ import Projects from './components/Projects';
 import Blog from './components/Blog';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import LanguageSwitcher from './components/LanguageSwitcher';
 import ProjectDetail from './components/ProjectDetail';
 import ProjectListing from './components/ProjectListing';
 import BlogCategory from './components/BlogCategory';
@@ -37,7 +36,6 @@ const HomePage: React.FC = () => {
 	
   return (
     <div className="min-h-screen bg-slate-900 text-white">
-      <LanguageSwitcher />
       <Header />
       <main className="pt-16 md:pt-24">
         <Hero />

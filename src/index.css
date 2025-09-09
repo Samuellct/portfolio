@@ -47,8 +47,17 @@ nav, nav *, button, [role="button"] {
   outline: none !important;
 }
 
-/* Préservation de l'accessibilité avec un focus visible personnalisé */
+/* Smooth focus transitions for accessibility */
 nav button:focus-visible {
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
   outline: none;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+/* Prevent text selection on navigation elements during animations */
+nav * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
