@@ -1,48 +1,58 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useTranslation } from 'react-i18next';
 import { GraduationCap, MapPin, Calendar } from 'lucide-react';
+import en from '../constants/en.json';
+
+type EducationItem = {
+  title: string;
+  school: string;
+  period: string;
+  location: string;
+  current?: boolean;
+};
 
 const Education: React.FC = () => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.2,
   });
-  const { t } = useTranslation();
 
-  const educationData = [
-    {
-      title: t('education.master.title'),
-      school: t('education.master.school'),
-      period: t('education.master.period'),
-      location: t('education.master.location'),
-      current: false,
-    },
+  // Extract data from en.json with safety fallback
+  const education = (en as any)?.education || {};
 
+  const educationData: EducationItem[] = [
     {
-      title: t('education.du.title'),
-      school: t('education.du.school'),
-      period: t('education.du.period'),
-      location: t('education.du.location'),
-      current: false,
-    },
-
-    {
-      title: t('education.bachelor.title'),
-      school: t('education.bachelor.school'),
-      period: t('education.bachelor.period'),
-      location: t('education.bachelor.location'),
-      current: false,
+      title: education?.master?.title ?? 'Master',
+      school: education?.master?.school ?? '',
+      period: education?.master?.period ?? '',
+      location: education?.master?.location ?? '',
+      current: education?.master?.current ?? false,
     },
     {
-      title: t('education.bac.title'),
-      school: t('education.bac.school'),
-      period: t('education.bac.period'),
-      location: t('education.bac.location'),
-      current: false,
+      title: education?.du?.title ?? 'University Diploma',
+      school: education?.du?.school ?? '',
+      period: education?.du?.period ?? '',
+      location: education?.du?.location ?? '',
+      current: education?.du?.current ?? false,
+    },
+    {
+      title: education?.bachelor?.title ?? 'Bachelor’s Degree',
+      school: education?.bachelor?.school ?? '',
+      period: education?.bachelor?.period ?? '',
+      location: education?.bachelor?.location ?? '',
+      current: education?.bachelor?.current ?? false,
+    },
+    {
+      title: education?.bac?.title ?? 'High School Diploma',
+      school: education?.bac?.school ?? '',
+      period: education?.bac?.period ?? '',
+      location: education?.bac?.location ?? '',
+      current: education?.bac?.current ?? false,
     },
   ];
+
+  const title = education?.title ?? 'Education';
 
   return (
     <section id="education" className="py-20 bg-slate-900">
@@ -53,9 +63,7 @@ const Education: React.FC = () => {
           transition={{ duration: 0.8 }}
           className="max-w-4xl mx-auto"
         >
-          <h2 className="text-4xl font-bold text-center mb-12">
-            {t('education.title')}
-          </h2>
+          <h2 className="text-4xl font-bold text-center mb-12">{title}</h2>
 
           <div className="relative">
             {/* Timeline line */}
@@ -73,13 +81,13 @@ const Education: React.FC = () => {
                   {/* Timeline dot */}
                   <div className="absolute left-6 w-4 h-4 bg-blue-500 rounded-full border-4 border-slate-900 hidden md:block" />
 
-                  <div className="md:ml-20 bg-slate-800/50 p-8 rounded-xl border border-slate-700 hover:border-blue-500/50 transition-all duration-300 min-w-0">
+                  <div className="md:ml-20 bg-slate-800/50 p-8 rounded-xl border border-slate-700 hover:border-blue-500/50 transition-all duration-300">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
                       <h3 className="text-xl font-semibold text-white mb-2 md:mb-0 md:flex-1 md:pr-4">
                         {edu.title}
                         {edu.current && (
                           <span className="ml-3 px-3 py-1 bg-blue-600/20 text-blue-400 text-sm rounded-full">
-                            En cours
+                            In progress
                           </span>
                         )}
                       </h3>

@@ -1,30 +1,32 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { 
-  Search, 
-  Filter, 
-  SortAsc, 
-  SortDesc, 
-  Grid3X3, 
+import {
+  Search,
+  ListFilter as Filter,
+  Import as SortAsc,
+  Dessert as SortDesc,
+  Grid3x2 as Grid3X3,
   List,
   Calendar,
   Clock,
   ExternalLink,
   Mountain,
   Microscope,
-  Code2,
-  ChevronRight,
+  Code as Code2,
   User,
   Tag,
-  Heart,
-  Eye,
-  BookOpen
+  BookOpen,
 } from 'lucide-react';
 import FloatingNav from './FloatingNav';
 import Breadcrumb from './Breadcrumb';
-import { getAllCategories, articlesData, getArticlePreview, type ArticleData, type CategoryData } from '../data/blogData';
+import {
+  getAllCategories,
+  articlesData,
+  getArticlePreview,
+  type ArticleData,
+  type CategoryData,
+} from '../data/blogData';
 
 interface BlogPost extends ArticleData {
   categoryData: CategoryData;
@@ -32,8 +34,8 @@ interface BlogPost extends ArticleData {
 
 const BlogListing: React.FC = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  
+  const handleGoHome = () => navigate('/');
+
   // State management
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -43,66 +45,68 @@ const BlogListing: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const itemsPerPage = 9;
 
-  // Scroll to top on mount
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Simulate loading
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
   }, []);
 
-  // Get all blog posts from centralized data
   const blogPosts: BlogPost[] = useMemo(() => {
     const posts: BlogPost[] = [];
     const categories = getAllCategories();
-    
-    Object.keys(articlesData).forEach(categoryId => {
-      const categoryData = categories.find(cat => cat.id === categoryId);
+
+    Object.keys(articlesData).forEach((categoryId) => {
+      const categoryData = categories.find((cat) => cat.id === categoryId);
       if (categoryData) {
-        Object.values(articlesData[categoryId]).forEach(article => {
+        Object.values(articlesData[categoryId])
+          .filter((article) => article.visible !== false) // Cacher les articles non visibles
+          .forEach((article) => {
           posts.push({
             ...article,
-            categoryData
+            categoryData,
           });
         });
       }
     });
-    
+
     return posts;
   }, []);
 
-  // Get unique keywords for filter
   const allKeywords = useMemo(() => {
     const keywords = new Set<string>();
-    blogPosts.forEach(post => {
-      post.keywords.forEach(keyword => keywords.add(keyword));
+    blogPosts.forEach((post) => {
+      post.keywords.forEach((keyword) => keywords.add(keyword));
     });
     return Array.from(keywords).sort();
   }, [blogPosts]);
 
-  // Filter and sort blog posts
   const filteredAndSortedPosts = useMemo(() => {
-    let filtered = blogPosts.filter(post => {
-      const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           post.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()));
-      
-      const matchesCategory = selectedCategory === 'all' || post.categoryData.id === selectedCategory;
-      const matchesKeyword = selectedKeyword === 'all' || post.keywords.includes(selectedKeyword);
-      
+    let filtered = blogPosts.filter((post) => {
+      const matchesSearch =
+        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.keywords.some((keyword) =>
+          keyword.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+      const matchesCategory =
+        selectedCategory === 'all' || post.categoryData.id === selectedCategory;
+      const matchesKeyword =
+        selectedKeyword === 'all' || post.keywords.includes(selectedKeyword);
+
       return matchesSearch && matchesCategory && matchesKeyword;
     });
 
-    // Sort posts
     filtered.sort((a, b) => {
       let comparison = 0;
-      
+
       switch (sortBy) {
         case 'date':
-          comparison = new Date(a.date).getTime() - new Date(b.date).getTime();
+          comparison =
+            new Date(a.date).getTime() - new Date(b.date).getTime();
           break;
         case 'title':
           comparison = a.title.localeCompare(b.title);
@@ -113,21 +117,19 @@ const BlogListing: React.FC = () => {
           comparison = aTime - bTime;
           break;
       }
-      
+
       return sortOrder === 'asc' ? comparison : -comparison;
     });
 
     return filtered;
   }, [blogPosts, searchTerm, selectedCategory, selectedKeyword, sortBy, sortOrder]);
 
-  // Pagination
   const totalPages = Math.ceil(filteredAndSortedPosts.length / itemsPerPage);
   const paginatedPosts = filteredAndSortedPosts.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  // Reset pagination when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, selectedCategory, selectedKeyword]);
@@ -155,10 +157,10 @@ const BlogListing: React.FC = () => {
         <div className="text-center">
           <motion.div
             animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
             className="w-16 h-16 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"
           />
-          <p className="text-lg text-slate-300">Chargement des articles...</p>
+          <p className="text-lg text-slate-300">Loading articles...</p>
         </div>
       </div>
     );
@@ -183,11 +185,12 @@ const BlogListing: React.FC = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-                Tous les Articles
+                All Articles
               </h1>
               <p className="text-xl text-slate-300 max-w-3xl">
-                Découvrez l'ensemble de mes articles sur la science, la technologie et mes aventures. 
-                Chaque article partage mes expériences et connaissances dans différents domaines.
+                Discover all my articles about science, technology, and my
+                personal adventures. Each article shares my experiences and
+                insights across different fields.
               </p>
             </motion.div>
           </div>
@@ -205,14 +208,17 @@ const BlogListing: React.FC = () => {
           >
             {/* Search Bar */}
             <div className="relative mb-6">
-              <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+              <Search
+                size={20}
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"
+              />
               <input
                 type="text"
-                placeholder="Rechercher un article, un mot-clé..."
+                placeholder="Search for an article or keyword..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
-                aria-label="Rechercher des articles"
+                aria-label="Search for articles"
               />
             </div>
 
@@ -220,97 +226,130 @@ const BlogListing: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               {/* Category Filter */}
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Catégorie</label>
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Category
+                </label>
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors duration-300"
-                  aria-label="Filtrer par catégorie"
                 >
-                  <option value="all">Toutes</option>
-                  {getAllCategories().map(category => (
-                    <option key={category.id} value={category.id}>{category.title}</option>
+                  <option value="all">All</option>
+                  {getAllCategories().map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.title}
+                    </option>
                   ))}
                 </select>
               </div>
 
               {/* Keyword Filter */}
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Mot-clé</label>
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Keyword
+                </label>
                 <select
                   value={selectedKeyword}
                   onChange={(e) => setSelectedKeyword(e.target.value)}
                   className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors duration-300"
-                  aria-label="Filtrer par mot-clé"
                 >
-                  <option value="all">Tous</option>
-                  {allKeywords.map(keyword => (
-                    <option key={keyword} value={keyword}>{keyword}</option>
+                  <option value="all">All</option>
+                  {allKeywords.map((keyword) => (
+                    <option key={keyword} value={keyword}>
+                      {keyword}
+                    </option>
                   ))}
                 </select>
               </div>
 
               {/* Sort Options */}
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Trier par</label>
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Sort by
+                </label>
                 <div className="flex gap-2">
                   <select
                     value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as 'date' | 'title' | 'readTime')}
+                    onChange={(e) =>
+                      setSortBy(e.target.value as 'date' | 'title' | 'readTime')
+                    }
                     className="flex-1 px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors duration-300"
-                    aria-label="Critère de tri"
                   >
                     <option value="date">Date</option>
-                    <option value="title">Titre</option>
-                    <option value="readTime">Temps de lecture</option>
+                    <option value="title">Title</option>
+                    <option value="readTime">Reading time</option>
                   </select>
                   <button
-                    onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                    onClick={() =>
+                      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
+                    }
                     className="px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-slate-300 hover:text-white hover:border-blue-500 transition-all duration-300"
-                    aria-label={`Tri ${sortOrder === 'asc' ? 'croissant' : 'décroissant'}`}
                   >
-                    {sortOrder === 'asc' ? <SortAsc size={20} /> : <SortDesc size={20} />}
+                    {sortOrder === 'asc' ? (
+                      <SortAsc size={20} />
+                    ) : (
+                      <SortDesc size={20} />
+                    )}
                   </button>
                 </div>
               </div>
 
-              {/* View Mode and Results Count */}
+              {/* View Mode */}
               <div className="flex flex-col justify-end">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-slate-400 mr-2">Vue:</span>
+                  <span className="text-sm text-slate-400 mr-2">View:</span>
                   <button
                     onClick={() => setViewMode('grid')}
                     className={`p-2 rounded-lg transition-all duration-300 ${
-                      viewMode === 'grid' 
-                        ? 'bg-blue-600 text-white' 
+                      viewMode === 'grid'
+                        ? 'bg-blue-600 text-white'
                         : 'bg-slate-700 text-slate-400 hover:text-white hover:bg-slate-600'
                     }`}
-                    aria-label="Vue en grille"
+                    aria-label="Grid view"
                   >
                     <Grid3X3 size={18} />
                   </button>
                   <button
                     onClick={() => setViewMode('list')}
                     className={`p-2 rounded-lg transition-all duration-300 ${
-                      viewMode === 'list' 
-                        ? 'bg-blue-600 text-white' 
+                      viewMode === 'list'
+                        ? 'bg-blue-600 text-white'
                         : 'bg-slate-700 text-slate-400 hover:text-white hover:bg-slate-600'
                     }`}
-                    aria-label="Vue en liste"
+                    aria-label="List view"
                   >
                     <List size={18} />
                   </button>
                 </div>
+                <button
+                  onClick={handleGoHome}
+                  className="ml-4 mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center gap-2"
+                  aria-label="Go home"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9,22 9,12 15,12 15,22" />
+                  </svg>
+                  Home
+                </button>
               </div>
             </div>
 
             {/* Results Count */}
             <div className="text-sm text-slate-400">
-              {filteredAndSortedPosts.length} article{filteredAndSortedPosts.length !== 1 ? 's' : ''} trouvé{filteredAndSortedPosts.length !== 1 ? 's' : ''}
+              {filteredAndSortedPosts.length} article
+              {filteredAndSortedPosts.length !== 1 ? 's' : ''} found
             </div>
           </motion.div>
 
-          {/* Blog Posts Grid/List */}
+          {/* Blog Posts */}
           <AnimatePresence mode="wait">
             {filteredAndSortedPosts.length === 0 ? (
               <motion.div
@@ -320,8 +359,12 @@ const BlogListing: React.FC = () => {
                 className="text-center py-16"
               >
                 <div className="text-6xl mb-4">📝</div>
-                <h3 className="text-xl font-semibold text-white mb-2">Aucun article trouvé</h3>
-                <p className="text-slate-400 mb-6">Essayez de modifier vos critères de recherche</p>
+                <h3 className="text-xl font-semibold text-white mb-2">
+                  No articles found
+                </h3>
+                <p className="text-slate-400 mb-6">
+                  Try adjusting your search criteria
+                </p>
                 <button
                   onClick={() => {
                     setSearchTerm('');
@@ -330,7 +373,7 @@ const BlogListing: React.FC = () => {
                   }}
                   className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300"
                 >
-                  Réinitialiser les filtres
+                  Reset filters
                 </button>
               </motion.div>
             ) : (
@@ -365,12 +408,13 @@ const BlogListing: React.FC = () => {
                         handlePostClick(post);
                       }
                     }}
-                    aria-label={`Lire l'article ${post.title}`}
+                    aria-label={`Read article ${post.title}`}
                   >
-                    {/* Post Image */}
-                    <div className={`relative overflow-hidden ${
-                      viewMode === 'list' ? 'w-48 flex-shrink-0' : 'h-48'
-                    }`}>
+                    <div
+                      className={`relative overflow-hidden ${
+                        viewMode === 'list' ? 'w-48 flex-shrink-0' : 'h-48'
+                      }`}
+                    >
                       <img
                         src={post.image}
                         alt={post.title}
@@ -385,24 +429,15 @@ const BlogListing: React.FC = () => {
                           <ExternalLink size={16} className="text-white" />
                         </div>
                       </div>
-                      
-                      {/* Category Badge */}
                       <div className="absolute top-4 left-4">
-                        <span className={`px-3 py-1 text-xs rounded-full font-medium bg-gradient-to-r ${post.categoryData.color} text-white`}>
+                        <span
+                          className={`px-3 py-1 text-xs rounded-full font-medium bg-gradient-to-r ${post.categoryData.color} text-white`}
+                        >
                           {post.categoryData.title}
                         </span>
                       </div>
-
-                      {/* Likes Badge */}
-                      <div className="absolute top-4 right-4">
-                        <div className="flex items-center gap-1 px-2 py-1 bg-slate-900/90 text-white text-xs rounded-full">
-                          <Heart size={12} className="text-red-400" />
-                          <span>{post.likes}</span>
-                        </div>
-                      </div>
                     </div>
 
-                    {/* Post Content */}
                     <div className="p-6 flex-1">
                       <div className="flex items-center gap-4 text-sm text-slate-400 mb-3">
                         <div className="flex items-center gap-1">
@@ -427,24 +462,26 @@ const BlogListing: React.FC = () => {
                         {getArticlePreview(post.content)}
                       </p>
 
-                      {/* Keywords */}
                       <div className="flex flex-wrap gap-2 mb-4">
-                        {post.keywords.slice(0, viewMode === 'list' ? 4 : 3).map((keyword) => (
-                          <span
-                            key={keyword}
-                            className="px-2 py-1 bg-slate-700/80 text-xs rounded-full text-slate-300 font-medium border border-slate-600"
-                          >
-                            {keyword}
-                          </span>
-                        ))}
-                        {post.keywords.length > (viewMode === 'list' ? 4 : 3) && (
+                        {post.keywords
+                          .slice(0, viewMode === 'list' ? 4 : 3)
+                          .map((keyword) => (
+                            <span
+                              key={keyword}
+                              className="px-2 py-1 bg-slate-700/80 text-xs rounded-full text-slate-300 font-medium border border-slate-600"
+                            >
+                              {keyword}
+                            </span>
+                          ))}
+                        {post.keywords.length >
+                          (viewMode === 'list' ? 4 : 3) && (
                           <span className="px-2 py-1 bg-slate-600/50 text-xs rounded-full text-slate-400 font-medium">
-                            +{post.keywords.length - (viewMode === 'list' ? 4 : 3)}
+                            +{post.keywords.length -
+                              (viewMode === 'list' ? 4 : 3)}
                           </span>
                         )}
                       </div>
 
-                      {/* Post Category */}
                       <div className="text-xs text-slate-500 flex items-center gap-1">
                         <Tag size={12} />
                         {post.category}
@@ -468,34 +505,35 @@ const BlogListing: React.FC = () => {
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
                 className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-300 hover:text-white hover:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
-                aria-label="Page précédente"
               >
-                Précédent
+                Previous
               </button>
-              
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-4 py-2 rounded-lg transition-all duration-300 ${
-                    currentPage === page
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:border-blue-500'
-                  }`}
-                  aria-label={`Page ${page}`}
-                  aria-current={currentPage === page ? 'page' : undefined}
-                >
-                  {page}
-                </button>
-              ))}
-              
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`px-4 py-2 rounded-lg transition-all duration-300 ${
+                      currentPage === page
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:border-blue-500'
+                    }`}
+                    aria-current={currentPage === page ? 'page' : undefined}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
+
               <button
-                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                onClick={() =>
+                  setCurrentPage(Math.min(totalPages, currentPage + 1))
+                }
                 disabled={currentPage === totalPages}
                 className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-300 hover:text-white hover:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
-                aria-label="Page suivante"
               >
-                Suivant
+                Next
               </button>
             </motion.div>
           )}

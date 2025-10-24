@@ -10,25 +10,33 @@
   "hero": {
     "name": "Samuel Lecomte",
     "title": "M.S. in Physics & Data Science",
-    "subtitle": "Recent graduate passionate about scientific research and data analysis",
+    "subtitle": "Recent graduate, passionate about scientific research and computer science",
     "cta": "Discover my background",
     "contact": "Get in touch"
   },
   "about": {
     "title": "About me",
-    "presentation": "About me",
-    "presentationText": "I am a serious and determined 23-year-old student, currently pursuing a Master's in Physics. My laboratory internship in 2024 allowed me to develop rigorous research methodology and great autonomy. Building on this experience, I am seeking new opportunities to deepen my knowledge.",
-    "goals": "Professional goals", 
-    "goalsText": "Open to PhD opportunities in fundamental physics or data science positions in industry. I aim to apply my analytical skills and scientific rigor to innovative projects.",
+    "subtitle": "",
+    "heroIntro": {
+      "hook": "Between physics and data science",
+      "story": "My journey started from a simple curiosity: understanding how our Universe works. From studying the chaotic regime of Saturn's rings to simulating particle collisions (M2 - ATLAS), I developed a rigorous work methodology: knowledge synthesis, then focus on a key point with concrete application of my skills, especially in data analysis. This approach extends to my personal projects, such as building this website. Here, you'll discover my journey as well as articles about my projects and hobbies !"
+    },
+    "stats": {
+      "experiments": "Simulation & analysis projects (LHCb / ATLAS)",
+      "languages": "Programming Languages",
+      "reports": "Reports and papers written in LaTeX"
+    },
+    "goals": "Professional goals",
+    "goalsText": "Today, two paths are open to me: pursuing a PhD in experimental physics or joining a data science / data engineering project. Both represent exciting challenges, and regardless of which path I take, I'm ready to invest 100% to learn, contribute, and meet the challenges.",
     "technicalSkills": "Technical skills",
     "otherSkills": "Other skills",
     "otherSkillsList": [
-      "Data analysis",
-      "LaTeX",
-      "Arduino",
-      "Scientific communication",
       "French (native)",
-      "English (fluent)"
+      "English (fluent)",
+      "Critical thinking and analytical skills",
+      "Scientific communication",
+      "Work organization according to priorities and objectives",
+      "Autonomy"
     ],
     "downloadCV": "Resume ↗",
     "languages": "Languages",
@@ -50,7 +58,7 @@
       "location": "Clermont-Ferrand, France"
     },
     "bachelor": {
-      "title": "Bachelor's in Physics",
+      "title": "Bachelor's degree in Physics",
       "school": "Université Clermont Auvergne",
       "period": "2019-2023",
       "location": "Clermont-Ferrand, France"
@@ -128,7 +136,7 @@
       "period": "February - July 2025",
       "location": "Aubière, France",
       "description": "Generation and analysis of simulated events to assess the feasibility of long-lived particle (LLP) searches at the HL-LHC. Production of HAHM scenarios (ggH and VH modes) and optimization of signal-to-background ratio. Characterization of LLP signatures and estimation of ATLAS detector acceptance.",
-      "tech": ["MadGraph", "Pythia", "Rivet", "C++", "git & docker"]
+      "tech": ["MadGraph", "Pythia", "Rivet", "C++", "git"]
     }
     },
     "workExperience": {
@@ -136,7 +144,7 @@
       "jobs": [
         {
           "title": "Seasonal vineyard worker",
-          "period": "July 2024",
+          "period": "July 2024 & September 2025",
           "company": "Charles Joguet",
           "location": "Sazilly"
         },
@@ -153,7 +161,7 @@
           "location": "Chinon"
         },
         {
-          "title": "Production agent",
+          "title": "Seasonal worker",
           "period": "July 2021 - August 2021",
           "company": "Reitzel briand",
           "location": "Bourré"
@@ -161,37 +169,36 @@
       ]
   },
   "blog": {
-    "title": "Blog & Updates",
-    "subtitle": "Sharing professional, athletic, and technical experiences",
+    "title": "Blog",
+    "subtitle": "Adventures, insights, and tech tips",
     "comingSoon": "Content coming soon...",
-    "description": "This space will be dedicated to sharing my professional experiences, athletic achievements, and technical project documentation."
+    "description": "his space is dedicated to sharing adventures, personal insights, and technical documentation about my projects.",
+    "viewAll": "View all articles",
+    "categories": {
+      "adventures": "Adventures",
+      "science": "Science",
+      "tech": "Tech"
+    }
   },
   "contact": {
-    "title": "Contact",
+    "title": "Contact me",
     "getInTouch": "Get In Touch",
     "subtitle": "Feel free to reach out to discuss opportunities or exchange about projects",
     "form": {
+      "title":"Send me a message",
       "name": "Name",
       "email": "Email",
       "subject": "Subject",
       "message": "Message",
-      "send": "Send",
+      "send": "Send message",
       "sending": "Sending...",
       "success": "Message sent successfully!",
       "successDescription": "I will get back to you as soon as possible.",
       "error": "Error sending message",
       "retry": "Try again"
     },
-    "info": {
-      "email": "samuel.lecomte@etu.uca.fr",
-      "location": "Tours (37), France"
-    },
-    "labels": {
-      "email": "Email",
-      "location": "Location"
-    },
     "social": {
-      "gitlab": "GitLab",
+      "github": "GitHub",
       "linkedin": "LinkedIn"
     }
   },

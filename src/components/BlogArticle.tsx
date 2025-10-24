@@ -10,6 +10,7 @@ import { getArticleById, getRelatedArticles, getArticlePreview, articlesData, ty
 const BlogArticle: React.FC = () => {
   const { categoryId, articleId } = useParams<{ categoryId: string; articleId: string }>();
   const navigate = useNavigate();
+
   const [likes, setLikes] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
   const [comments, setComments] = useState<Array<{ id: string; author: string; content: string; date: string }>>([]);
@@ -18,7 +19,7 @@ const BlogArticle: React.FC = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [categoryId, articleId]); // Add categoryId to dependencies
+  }, [categoryId, articleId]);
 
   const articleData = useMemo((): ArticleData | null => {
     if (!categoryId || !articleId) return null;
@@ -30,7 +31,7 @@ const BlogArticle: React.FC = () => {
     return getRelatedArticles(articleData.id, categoryId, 3);
   }, [articleData, categoryId]);
 
-  // Charger likes & commentaires depuis les API
+  // Load likes & comments from API
   useEffect(() => {
     if (!articleData) return;
     const load = async () => {
@@ -44,27 +45,25 @@ const BlogArticle: React.FC = () => {
         setLikes(typeof likesJson?.count === 'number' ? likesJson.count : 0);
         setComments(Array.isArray(commentsJson?.items) ? commentsJson.items : []);
       } catch (e) {
-        console.error('Erreur de chargement likes/commentaires', e);
+        console.error('Error loading likes/comments', e);
       }
     };
     load();
   }, [articleData]);
 
-
   if (!articleData) {
     return (
       <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Article non trouvé</h1>
+          <h1 className="text-2xl font-bold mb-4">Article not found</h1>
         </div>
         <FloatingNav categoryId={categoryId} articleId={articleId} />
       </div>
     );
   }
-  
+
   const handleLike = async () => {
     if (hasLiked || !articleData) return;
-    // Optimistic UI
     setHasLiked(true);
     setLikes((prev) => prev + 1);
     try {
@@ -72,15 +71,14 @@ const BlogArticle: React.FC = () => {
       const json = await res.json();
       if (typeof json?.count === 'number') setLikes(json.count);
     } catch (e) {
-      console.error('Erreur like', e);
-      // rollback soft si échec
+      console.error('Like error', e);
       setHasLiked(false);
       setLikes((prev) => Math.max(0, prev - 1));
     }
   };
-  
-   // Formatage date → FR + fuseau Paris
-  const dtf = new Intl.DateTimeFormat('fr-FR', {
+
+  // Date formatting → EN (US locale)
+  const dtf = new Intl.DateTimeFormat('en-US', {
     dateStyle: 'long',
     timeStyle: 'short',
     timeZone: 'Europe/Paris',
@@ -93,16 +91,16 @@ const BlogArticle: React.FC = () => {
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-	if (!articleData) return;
-	if (!newComment.trim() || !commentAuthor.trim()) return;
-	
-	const optimistic = {
-      id: `tmp-${Date.now()}`,		
-      author: commentAuthor,		
+    if (!articleData) return;
+    if (!newComment.trim() || !commentAuthor.trim()) return;
+
+    const optimistic = {
+      id: `tmp-${Date.now()}`,
+      author: commentAuthor,
       content: newComment,
       date: new Date().toISOString(),
     };
-    // Optimistic UI
+
     setComments((prev) => [optimistic, ...prev]);
     setNewComment('');
     setCommentAuthor('');
@@ -115,15 +113,13 @@ const BlogArticle: React.FC = () => {
       });
       const json = await res.json();
       if (json?.item?.id) {
-        // remplace l’entrée optimiste par la version serveur
         setComments((prev) => [json.item, ...prev.filter((c) => c.id !== optimistic.id)]);
       }
     } catch (e) {
-      console.error('Erreur post commentaire', e);
-      // rollback si échec
+      console.error('Error posting comment', e);
       setComments((prev) => prev.filter((c) => c.id !== optimistic.id));
     }
-   };
+  };
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -135,6 +131,10 @@ const BlogArticle: React.FC = () => {
         className="bg-slate-900/95 backdrop-blur-md border-b border-slate-700 pt-16 md:pt-0"
       >
         <div className="container mx-auto px-6 py-12">
+          <div className="max-w-4xl mx-auto">
+            <Breadcrumb />
+          </div>
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -144,7 +144,6 @@ const BlogArticle: React.FC = () => {
             <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent leading-tight">
               {articleData.title}
             </h1>
-            
             <div className="flex flex-wrap gap-2 mb-8">
               {articleData.keywords.map((keyword) => (
                 <span
@@ -190,57 +189,7 @@ const BlogArticle: React.FC = () => {
             className="mb-12"
           >
             <div className="prose prose-lg prose-invert max-w-none text-justify">
-              <ReactMarkdown
-                components={{
-                  h2: ({ children }) => (
-                    <h2 className="text-2xl font-bold text-white mt-8 mb-4 first:mt-0">
-                      {children}
-                    </h2>
-                  ),
-                  h3: ({ children }) => (
-                    <h3 className="text-xl font-semibold text-white mt-6 mb-3">
-                      {children}
-                    </h3>
-                  ),
-                  p: ({ children }) => (
-                    <p className="text-slate-300 leading-relaxed mb-6 text-lg">
-                      {children}
-                    </p>
-                  ),
-                  strong: ({ children }) => (
-                    <strong className="text-white font-semibold">
-                      {children}
-                    </strong>
-                  ),
-                  ul: ({ children }) => (
-                    <ul className="list-disc list-inside text-slate-300 mb-6 space-y-2">
-                      {children}
-                    </ul>
-                  ),
-                  ol: ({ children }) => (
-                    <ol className="list-decimal list-inside text-slate-300 mb-6 space-y-2">
-                      {children}
-                    </ol>
-                  ),
-                  li: ({ children }) => (
-                    <li className="text-slate-300 leading-relaxed">
-                      {children}
-                    </li>
-                  ),
-                  code: ({ children }) => (
-                    <code className="bg-slate-700 px-2 py-1 rounded text-cyan-300 font-mono text-sm">
-                      {children}
-                    </code>
-                  ),
-                  blockquote: ({ children }) => (
-                    <blockquote className="border-l-4 border-blue-500 pl-6 italic text-slate-400 my-6">
-                      {children}
-                    </blockquote>
-                  ),
-                }}
-              >
-                {articleData.content}
-              </ReactMarkdown>
+              <ReactMarkdown>{articleData.content}</ReactMarkdown>
             </div>
           </motion.article>
 
@@ -264,7 +213,7 @@ const BlogArticle: React.FC = () => {
             >
               <Heart size={20} className={hasLiked ? 'fill-current' : ''} />
               <span className="font-medium">{likes}</span>
-              <span className="text-sm">{hasLiked ? 'Merci !' : 'J\'aime'}</span>
+              <span className="text-sm">{hasLiked ? 'Thanks!' : 'Like'}</span>
             </motion.button>
           </motion.div>
 
@@ -278,7 +227,7 @@ const BlogArticle: React.FC = () => {
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400">
               <div className="flex items-center gap-2">
                 <Calendar size={16} />
-                <span>Publié le {articleData.date}</span>
+                <span>Published on {articleData.date}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock size={16} />
@@ -294,8 +243,8 @@ const BlogArticle: React.FC = () => {
               </div>
             </div>
           </motion.div>
-		  
-		  {/* Related Articles Section */}
+
+          {/* Related Articles Section */}
           {relatedArticles.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -309,9 +258,9 @@ const BlogArticle: React.FC = () => {
                     <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
                   </svg>
                 </div>
-                Articles similaires
+                Related Articles
               </h3>
-              
+
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {relatedArticles.map((article, index) => (
                   <motion.div
@@ -321,7 +270,6 @@ const BlogArticle: React.FC = () => {
                     transition={{ duration: 0.4, delay: 1.4 + index * 0.1 }}
                     whileHover={{ y: -5, scale: 1.02 }}
                     onClick={() => {
-                      // Find the category for this article
                       let articleCategoryId = '';
                       Object.keys(articlesData).forEach(catId => {
                         if (articlesData[catId][article.id]) {
@@ -345,12 +293,12 @@ const BlogArticle: React.FC = () => {
                         </span>
                       </div>
                     </div>
-                    
+
                     <div className="p-4">
                       <h4 className="font-semibold text-white mb-2 line-clamp-2 group-hover:text-blue-400 transition-colors duration-300">
                         {article.title}
                       </h4>
-                      
+
                       <div className="flex items-center gap-3 text-xs text-slate-400 mb-3">
                         <div className="flex items-center gap-1">
                           <Calendar size={12} />
@@ -361,11 +309,11 @@ const BlogArticle: React.FC = () => {
                           <span>{article.readTime}</span>
                         </div>
                       </div>
-                      
+
                       <p className="text-slate-400 text-sm line-clamp-2 mb-3">
                         {getArticlePreview(article.content)}
                       </p>
-                      
+
                       <div className="flex flex-wrap gap-1">
                         {article.keywords.slice(0, 2).map((keyword) => (
                           <span
@@ -393,7 +341,7 @@ const BlogArticle: React.FC = () => {
             <div className="flex items-center gap-2 mb-8">
               <MessageCircle size={24} className="text-blue-400" />
               <h3 className="text-2xl font-bold text-white">
-                Commentaires ({comments.length})
+                Comments ({comments.length})
               </h3>
             </div>
 
@@ -402,7 +350,7 @@ const BlogArticle: React.FC = () => {
               <div className="grid md:grid-cols-2 gap-4 mb-4">
                 <input
                   type="text"
-                  placeholder="Votre nom"
+                  placeholder="Your name"
                   value={commentAuthor}
                   onChange={(e) => setCommentAuthor(e.target.value)}
                   className="px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
@@ -410,7 +358,7 @@ const BlogArticle: React.FC = () => {
                 />
               </div>
               <textarea
-                placeholder="Votre commentaire..."
+                placeholder="Your comment..."
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 rows={4}
@@ -423,7 +371,7 @@ const BlogArticle: React.FC = () => {
                 whileTap={{ scale: 0.98 }}
                 className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors duration-300"
               >
-                Publier le commentaire
+                Post comment
               </motion.button>
             </form>
 
@@ -440,7 +388,7 @@ const BlogArticle: React.FC = () => {
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-semibold text-white">{comment.author}</h4>
                     <span className="text-sm text-slate-400">
-					  {formatCommentDate(comment.date)}
+                      {formatCommentDate(comment.date)}
                     </span>
                   </div>
                   <p className="text-slate-300 leading-relaxed">{comment.content}</p>

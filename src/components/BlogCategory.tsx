@@ -22,8 +22,10 @@ const BlogCategory: React.FC = () => {
 
   const articles = useMemo(() => {
     if (!categoryId) return [];
-    return getArticlesByCategory(categoryId);
-  }, [categoryId]);
+    return getArticlesByCategory(categoryId).filter(
+    (article) => article.visible !== false // masque les articles non visibles
+  );
+}, [categoryId]);
 
   // Get icon component based on category
   const getCategoryIcon = (iconName: string) => {
@@ -43,11 +45,12 @@ const BlogCategory: React.FC = () => {
     navigate(`/blog/${categoryId}/${articleId}`);
   };
 
+  // Handle invalid category
   if (!categoryData) {
     return (
       <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Catégorie non trouvée</h1>
+          <h1 className="text-2xl font-bold mb-4">Category not found</h1>
         </div>
         <FloatingNav categoryId={categoryId} />
       </div>
@@ -74,7 +77,9 @@ const BlogCategory: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-center"
           >
-            <div className={`inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r ${categoryData.color} rounded-2xl mb-6 text-white`}>
+            <div
+              className={`inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r ${categoryData.color} rounded-2xl mb-6 text-white`}
+            >
               {getCategoryIcon(categoryData.icon)}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
@@ -111,13 +116,15 @@ const BlogCategory: React.FC = () => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
                       <div className="absolute top-4 left-4">
-                        <span className={`px-3 py-1 text-xs rounded-full font-medium bg-gradient-to-r ${categoryData.color} text-white`}>
+                        <span
+                          className={`px-3 py-1 text-xs rounded-full font-medium bg-gradient-to-r ${categoryData.color} text-white`}
+                        >
                           {article.category}
                         </span>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="md:w-2/3 p-8">
                     <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
                       <div className="flex items-center gap-1">
@@ -129,18 +136,21 @@ const BlogCategory: React.FC = () => {
                         <span>{article.readTime}</span>
                       </div>
                     </div>
-                    
+
                     <h2 className="text-2xl font-bold mb-4 text-white group-hover:text-blue-400 transition-colors duration-300">
                       {article.title}
                     </h2>
-                    
+
                     <p className="text-slate-300 leading-relaxed mb-6 line-clamp-3">
                       {getArticlePreview(article.content)}
                     </p>
-                    
+
                     <div className="flex items-center gap-2 text-blue-400 font-medium group-hover:gap-3 transition-all duration-300">
-                      <span>Lire l'article</span>
-                      <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
+                      <span>Read article</span>
+                      <ArrowRight
+                        size={18}
+                        className="group-hover:translate-x-1 transition-transform duration-300"
+                      />
                     </div>
                   </div>
                 </div>

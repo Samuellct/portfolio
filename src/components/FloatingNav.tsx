@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react';
-import { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Home, BookOpen } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -9,23 +8,20 @@ interface FloatingNavProps {
   articleId?: string;
 }
 
-const FloatingNav: React.FC<FloatingNavProps> = ({
-  categoryId,
-  articleId
-}) => {
+const FloatingNav: React.FC<FloatingNavProps> = ({ categoryId, articleId }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Use useCallback to ensure handlers are stable and current
+  // Navigation helpers
   const handleBack = useCallback(() => {
     if (articleId && categoryId) {
-      // From article to category
+      // From article → category
       navigate(`/blog/${categoryId}`, { replace: true });
     } else if (categoryId) {
-      // From category to blog section
-      navigate('/', { state: { scrollTo: 'blog' }, replace: true });
+      // From category → /blog page
+      navigate('/blog', { replace: true });
     } else {
-      // Fallback
+      // Fallback → home
       navigate('/', { replace: true });
     }
   }, [navigate, categoryId, articleId]);
@@ -35,65 +31,68 @@ const FloatingNav: React.FC<FloatingNavProps> = ({
   }, [navigate]);
 
   const handleBlog = useCallback(() => {
-    navigate('/', { state: { scrollTo: 'blog' }, replace: true });
+    navigate('/blog', { replace: true });
   }, [navigate]);
 
-  // Determine navigation items based on current page type
+  // Static labels (English only)
+  const labels = { back: 'Back', home: 'Home', blog: 'Blog' };
+
+  // Determine which buttons to show
   const navItems = useMemo(() => {
     if (articleId && categoryId) {
-      // Article page: back to category, home, blog section
+      // Article page
       return [
         {
           icon: <ArrowLeft size={20} />,
-          label: 'Retour',
+          label: labels.back,
           onClick: handleBack,
-          color: 'hover:bg-slate-700'
+          color: 'hover:bg-slate-700',
         },
         {
           icon: <Home size={20} />,
-          label: 'Accueil',
+          label: labels.home,
           onClick: handleHome,
-          color: 'hover:bg-blue-600'
+          color: 'hover:bg-blue-600',
         },
         {
           icon: <BookOpen size={20} />,
-          label: 'Blog',
+          label: labels.blog,
           onClick: handleBlog,
-          color: 'hover:bg-purple-600'
-        }
+          color: 'hover:bg-purple-600',
+        },
       ];
     } else if (categoryId) {
-      // Category page: home, back to blog section (renamed from "blog" to "back")
+      // Category page
       return [
         {
           icon: <ArrowLeft size={20} />,
-          label: 'Retour',
-          onClick: handleBlog, // This goes to blog section
-          color: 'hover:bg-slate-700'
+          label: labels.back,
+          onClick: handleBlog,
+          color: 'hover:bg-slate-700',
         },
         {
           icon: <Home size={20} />,
-          label: 'Accueil',
+          label: labels.home,
           onClick: handleHome,
-          color: 'hover:bg-blue-600'
-        }
+          color: 'hover:bg-blue-600',
+        },
       ];
     } else {
-      // Fallback
+      // Generic page
       return [
         {
           icon: <Home size={20} />,
-          label: 'Accueil',
+          label: labels.home,
           onClick: handleHome,
-          color: 'hover:bg-blue-600'
-        }
+          color: 'hover:bg-blue-600',
+        },
       ];
     }
-  }, [articleId, categoryId, handleBack, handleHome, handleBlog]);
+  }, [articleId, categoryId, handleBack, handleHome, handleBlog, labels]);
 
   return (
     <motion.div
-      key={location.pathname} // Force re-render on route change
+      key={location.pathname}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
@@ -112,13 +111,12 @@ const FloatingNav: React.FC<FloatingNavProps> = ({
               style={{ pointerEvents: 'auto' }}
             >
               <motion.div
-                whileHover={{ rotate: item.label === 'Retour' ? -10 : 0 }}
+                whileHover={{ rotate: item.label === labels.back ? -10 : 0 }}
                 transition={{ duration: 0.2 }}
                 className="pointer-events-none"
               >
                 {item.icon}
               </motion.div>
-              {/* Hover label - show on all screen sizes */}
               <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs bg-slate-800 px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-slate-600 shadow-lg">
                 {item.label}
               </span>

@@ -10,6 +10,7 @@ export interface ArticleData {
   category: string;
   keywords: string[];
   likes: number;
+  visible?: boolean;
 }
 
 export interface CategoryData {
@@ -54,12 +55,15 @@ export const getArticlePreview = (content: string): string => {
   return truncateText(content, 150);
 };
 
-// Categories configuration
+// ==============================================================================
+// Categories Configuration
+// ==============================================================================
+
 export const blogCategories: CategoryData[] = [
   {
     id: 'adventures',
-    title: 'Aventures & Défis',
-    description: 'Récits de courses en montagne, événements sportifs marquants et défis personnels',
+    title: 'Adventures',
+    description: 'Mountain Race Reports and Other Sporting Highlights',
     color: 'from-emerald-500 to-teal-500',
     icon: 'Mountain',
     hoverColor: 'hover:border-emerald-400/50',
@@ -67,8 +71,8 @@ export const blogCategories: CategoryData[] = [
   },
   {
     id: 'science',
-    title: 'Science & Découvertes',
-    description: 'Discussions sur les résultats scientifiques récents et perspectives en physique',
+    title: 'Science',
+    description: 'Discussions on some recent scientific results',
     color: 'from-violet-500 to-purple-500',
     icon: 'Microscope',
     hoverColor: 'hover:border-violet-400/50',
@@ -76,8 +80,8 @@ export const blogCategories: CategoryData[] = [
   },
   {
     id: 'tech',
-    title: 'Tech & Implémentations',
-    description: 'Tutoriels détaillés et documentation technique de mes projets',
+    title: 'Tech',
+    description: 'Tutorials and documentation of my projects',
     color: 'from-cyan-500 to-blue-500',
     icon: 'Code2',
     hoverColor: 'hover:border-cyan-400/50',
@@ -85,7 +89,9 @@ export const blogCategories: CategoryData[] = [
   }
 ];
 
+// ==============================================================================
 // Centralized articles data
+// ==============================================================================
 export const articlesData: Record<string, Record<string, ArticleData>> = {
   science: {
     'computing-centers-physics': {
@@ -111,138 +117,133 @@ L'utilité des centres de calcul dépasse largement le champ de la physique des 
       date: '10 Janvier 2025',
       readTime: '6 min',
       image: 'https://images.pexels.com/photos/2004161/pexels-photo-2004161.jpeg?auto=compress&cs=tinysrgb&w=1200',
-      imageCaption: 'Centre de calcul haute performance - Infrastructure moderne pour la recherche scientifique',
+      imageCaption: 'High-performance computing center',
       author: 'Samuel Lecomte',
-      category: 'Science & Découvertes',
-      keywords: ['physique des particules', 'centres de calcul', 'big data scientifique', 'technologies distribuées'],
-      likes: 42
+      category: 'Science',
+      keywords: ['particle physics', 'computing centers', 'big data', 'distributed computing'],
+      likes: 42,
+      visible: true
     }
   },
+  
   adventures: {
-    'trail-mont-blanc': {
-      id: 'trail-mont-blanc',
-      title: 'Trail du Mont-Blanc : 42km de défi personnel',
-      content: `Le Trail du Mont-Blanc représente l'un des défis les plus emblématiques du trail running européen. Cette course mythique de 42 kilomètres traverse trois pays - France, Italie et Suisse - en offrant des panoramas à couper le souffle sur le massif du Mont-Blanc.
-
-## La préparation : un engagement total
-
-La préparation pour cette course a commencé six mois avant l'événement. Mon programme d'entraînement s'articulait autour de trois axes principaux : le développement de l'endurance, le renforcement musculaire spécifique à la montagne, et l'acclimatation à l'altitude.
-
-Les sorties longues en montagne étaient programmées chaque weekend, avec des dénivelés progressifs allant de 800m à plus de 2000m. L'objectif était de habituer le corps aux contraintes spécifiques du trail :
-
-- Descentes techniques
-- Montées soutenues  
-- Changements d'altitude répétés
-
-## Le jour J : gestion de l'effort et stratégie
-
-Le départ a lieu à 6h du matin depuis Chamonix. La stratégie était claire : partir prudemment pour économiser l'énergie sur la première moitié, puis accélérer progressivement si les sensations le permettaient.
-
-Les premiers kilomètres traversent la vallée de Chamonix avant d'attaquer la montée vers le refuge de la Flégère. Cette première ascension de 1200m de dénivelé positif constitue un test crucial pour évaluer ses sensations du jour.
-
-## Les moments clés du parcours
-
-Le passage au col des Montets marque la frontière avec la Suisse. C'est également le point le plus haut du parcours à 1461m d'altitude. La vue sur le glacier d'Argentière est saisissante, mais il faut résister à la tentation de s'arrêter trop longtemps.
-
-La descente vers Vallorcine est technique et demande une concentration maximale. Les pierres humides et les racines glissantes constituent autant de pièges pour les chevilles fatiguées.
-
-## L'arrivée et les enseignements
-
-
-
-
-
-
-
-
-
-
-
-
-Franchir la ligne d'arrivée après 4h32 d'effort a été un moment d'émotion intense. Au-delà de la performance chronométrique, cette course m'a appris l'importance de la patience et de la régularité dans l'effort.
-
-Cette expérience confirme que le trail en montagne est autant un défi physique qu'un exercice de gestion mentale. Chaque course apporte ses enseignements et nourrit la motivation pour les prochains défis.`,
-      date: '15 Mars 2024',
-      readTime: '8 min',
+    'saintexpress': {
+      id: 'saintexpress',
+      title: "SaintExpress",
+      content: ``,
+      date: 'TBD',
+      readTime: '999 min',
       image: 'https://images.pexels.com/photos/2422915/pexels-photo-2422915.jpeg?auto=compress&cs=tinysrgb&w=1200',
-      imageCaption: 'Vue panoramique sur le massif du Mont-Blanc depuis le sentier de trail',
+      imageCaption: 'TBD',
       author: 'Samuel Lecomte',
-      category: 'Aventures & Défis',
-      keywords: ['trail running', 'mont-blanc', 'course en montagne', 'endurance'],
-      likes: 28
+      category: 'Adventures',
+      keywords: ['trail running'],
+      likes: 0,
+      visible: false
+    },
+    "olympics-10k": {
+      id: "olympics-10k",
+      title: "My 10k Run at the Olympics",
+      content: "",
+      date: "TBD",
+      readTime: "-",
+      image:
+        "https://images.pexels.com/photos/2422915/pexels-photo-2422915.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      imageCaption: "",
+      author: "Samuel Lecomte",
+      category: "Adventures",
+      keywords: [],
+      likes: 0,
+      visible: false      
+    },
+    "maxi-race-annecy": {
+      id: "maxi-race-annecy",
+      title: "MaXi-Race : 100km around Lake Annecy",
+      content: "",
+      date: "TBD",
+      readTime: "-",
+      image:
+        "https://images.pexels.com/photos/2422915/pexels-photo-2422915.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      imageCaption: "",
+      author: "Samuel Lecomte",
+      category: "Adventures",
+      keywords: [],
+      likes: 0,
+      visible: true
     }
   },
   tech: {
-    'proxmox-setup': {
-      id: 'proxmox-setup',
-      title: 'Configuration complète d\'un serveur Proxmox domestique',
-      content: `Proxmox Virtual Environment (VE) est une solution de virtualisation open-source qui permet de créer et gérer des machines virtuelles et des conteneurs sur une même plateforme. Dans cet article, je détaille la mise en place complète d'un serveur Proxmox domestique.
-
-## Prérequis matériels et logiciels
-
-Pour ce projet, j'ai utilisé un serveur Dell PowerEdge T30 équipé d'un processeur Intel Xeon E3-1225 v5, 16 GB de RAM DDR4 et deux disques durs de 2 TB en configuration RAID 1 pour la redondance.
-
-Le choix du matériel est crucial : Proxmox nécessite au minimum 2 GB de RAM, mais je recommande fortement 8 GB minimum pour un usage confortable. Le processeur doit supporter la virtualisation matérielle (Intel VT-x ou AMD-V).
-
-## Installation de Proxmox VE
-
-L'installation se fait via une image ISO bootable téléchargeable gratuitement sur le site officiel. Le processus d'installation est guidé et relativement simple :
-
-1. Création de la clé USB bootable avec l'image Proxmox
-2. Configuration du BIOS pour activer la virtualisation
-3. Boot sur la clé USB et lancement de l'installateur
-4. Configuration réseau et partitionnement des disques
-
-## Configuration post-installation
-
-Une fois Proxmox installé, l'interface web est accessible via \`https://IP-DU-SERVEUR:8006\`. La première étape consiste à configurer les dépôts pour les mises à jour et à créer un pool de stockage.
-
-La configuration réseau mérite une attention particulière. J'ai opté pour un bridge Linux (vmbr0) qui permet aux machines virtuelles d'accéder directement au réseau local. Cette configuration facilite l'accès aux services hébergés depuis d'autres appareils du réseau.
-
-### Création de la première VM : TrueNAS
-
-Pour le stockage centralisé, j'ai déployé une machine virtuelle TrueNAS Core. Cette distribution FreeBSD spécialisée dans le stockage offre des fonctionnalités avancées : snapshots, réplication, chiffrement, et interface web intuitive.
-
-La configuration de TrueNAS nécessite de passer les disques de stockage en mode "passthrough" pour que le système puisse gérer directement le RAID matériel. Cette étape est critique pour les performances et la fiabilité.
-
-## Sécurisation et maintenance
-
-La sécurité d'un serveur domestique ne doit pas être négligée. J'ai mis en place plusieurs mesures :
-
-- Changement des mots de passe par défaut
-- Configuration d'un firewall avec règles restrictives
-- Mise en place de sauvegardes automatisées
-- Monitoring des ressources et alertes par email
-
-Les mises à jour régulières de Proxmox et des machines virtuelles sont essentielles pour maintenir la sécurité du système.
-
-## Résultats et perspectives
-
-Après six mois d'utilisation, le serveur Proxmox fonctionne de manière stable et fiable. Il héberge actuellement :
-
-- Une VM TrueNAS pour le stockage familial (4 TB utilisables)
-- Une VM Ubuntu Server pour les services web
-- Un conteneur LXC pour Home Assistant
-
-Cette infrastructure m'a permis d'acquérir une expérience pratique précieuse en administration système et virtualisation, compétences directement transférables dans un contexte professionnel.`,
-      date: '5 Janvier 2025',
-      readTime: '15 min',
-      image: 'https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=1200',
-      imageCaption: 'Serveur rack dans un centre de données moderne',
-      author: 'Samuel Lecomte',
-      category: 'Tech & Implémentations',
-      keywords: ['proxmox', 'virtualisation', 'serveur domestique', 'truenas'],
-      likes: 35
-    }
-  }
+    "diy-server-proxmox": {
+      id: "diy-server-proxmox",
+      title: "Building a DIY Server: Proxmox Installation",
+      content: "",
+      date: "TBD",
+      readTime: "—",
+      image:
+        "https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      imageCaption: "",
+      author: "Samuel Lecomte",
+      category: "Tech",
+      keywords: [],
+      likes: 0,
+      visible: false
+    },
+    "truenas-on-proxmox": {
+      id: "truenas-on-proxmox",
+      title: "Building a Private NAS: Installing TrueNAS on Proxmox",
+      content: "",
+      date: "TBD",
+      readTime: "—",
+      image:
+        "https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      imageCaption: "",
+      author: "Samuel Lecomte",
+      category: "Tech",
+      keywords: [],
+      likes: 0,
+      visible: true
+    },
+    "jellyfin-media-server": {
+      id: "jellyfin-media-server",
+      title: "Jellyfin: An Open-Source Media Server",
+      content: "",
+      date: "TBD",
+      readTime: "—",
+      image:
+        "https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      imageCaption: "",
+      author: "Samuel Lecomte",
+      category: "Tech",
+      keywords: [],
+      likes: 0,
+      visible: false
+    },
+    "nas-remote-access": {
+      id: "nas-remote-access",
+      title: "Accessing Your NAS / Media Server From Anywhere",
+      content: "",
+      date: "TBD",
+      readTime: "—",
+      image:
+        "https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      imageCaption: "",
+      author: "Samuel Lecomte",
+      category: "Tech",
+      keywords: [],
+      likes: 0,
+      visible: false
+    },
+  },
 };
 
+// ==============================================================================
 // Categories data
+// ==============================================================================
 export const categoriesData: Record<string, CategoryData> = {
   adventures: {
     id: 'adventures',
-    title: 'Aventures & Défis',
-    description: 'Récits de courses en montagne et événements sportifs',
+    title: 'Adventures',
+    description: 'Mountain Race Reports and Other Sporting Highlights',
     color: 'from-emerald-500 to-teal-500',
     icon: 'Mountain',
     hoverColor: 'hover:border-emerald-400/50',
@@ -250,8 +251,8 @@ export const categoriesData: Record<string, CategoryData> = {
   },
   science: {
     id: 'science',
-    title: 'Science & Découvertes',
-    description: 'Discussions sur les avancées scientifiques et perspectives en physique',
+    title: 'Science',
+    description: 'Discussions on some recent scientific results',
     color: 'from-violet-500 to-purple-500',
     icon: 'Microscope',
     hoverColor: 'hover:border-violet-400/50',
@@ -259,8 +260,8 @@ export const categoriesData: Record<string, CategoryData> = {
   },
   tech: {
     id: 'tech',
-    title: 'Tech & Implémentations',
-    description: 'Tutoriels techniques et documentation de projets',
+    title: 'Tech',
+    description: 'Tutorials and documentation of my projects',
     color: 'from-cyan-500 to-blue-500',
     icon: 'Code2',
     hoverColor: 'hover:border-cyan-400/50',
@@ -268,7 +269,9 @@ export const categoriesData: Record<string, CategoryData> = {
   }
 };
 
+// ==============================================================================
 // Helper functions
+// ==============================================================================
 export const getArticleById = (categoryId: string, articleId: string): ArticleData | null => {
   return articlesData[categoryId]?.[articleId] || null;
 };
@@ -293,6 +296,7 @@ export const getRelatedArticles = (currentArticleId: string, categoryId: string,
   // Collect all articles from all categories
   Object.keys(articlesData).forEach(catId => {
     Object.values(articlesData[catId]).forEach(article => {
+      if (article.visible === false) return; // Skip invisible articles
       allArticles.push(article);
     });
   });

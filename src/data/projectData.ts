@@ -1,7 +1,18 @@
+import quantumCPU from '../assets/quantum_cpu.webp';
+import arduinoM1 from '../assets/arduino_M1.jpg';
+import arduinoM2 from '../assets/arduino_M2.jpg';
+import data_analysis_L3 from '../assets/data_analysis.jpg';
+import saturn_chaos_L3 from '../assets/saturn.jpg';
+import LabVIEW_muon_M1 from '../assets/LabVIEW.png';
+import Ising_M1 from '../assets/ising.png';
+import muon_lifetime from '../assets/muon_lifetime.png';
+import proxmox from '../assets/proxmox.png';
+
 export interface ProjectData {
   id: string;
   title: string;
   description: string;
+  subtitle?: string;
   detailedDescription: string;
   technologies: string[];
   category: 'personal' | 'academic' | 'internship';
@@ -9,6 +20,8 @@ export interface ProjectData {
   period: string;
   location: string;
   image: string;
+  imageCredit?: string;
+  imageCreditUrl?: string;
   gitlabUrl?: string;
   featured?: boolean;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
@@ -62,8 +75,8 @@ export const getProjectPreview = (description: string): string => {
 export const projectCategories: CategoryData[] = [
   {
     id: 'personal',
-    title: 'Projets Personnels',
-    description: 'Projets développés de manière autonome pour explorer de nouvelles technologies',
+    title: 'Personal projects',
+    description: 'Self-developed projects to try new technologies',
     color: 'from-blue-500 to-cyan-500',
     icon: 'User',
     hoverColor: 'hover:border-blue-400/50',
@@ -71,8 +84,8 @@ export const projectCategories: CategoryData[] = [
   },
   {
     id: 'academic',
-    title: 'Projets Académiques',
-    description: 'Travaux réalisés dans le cadre de mes études universitaires',
+    title: 'Academic projects',
+    description: 'Projects from my university coursework',
     color: 'from-purple-500 to-violet-500',
     icon: 'GraduationCap',
     hoverColor: 'hover:border-purple-400/50',
@@ -80,8 +93,8 @@ export const projectCategories: CategoryData[] = [
   },
   {
     id: 'internship',
-    title: 'Stages & Recherche',
-    description: 'Expériences professionnelles et projets de recherche en laboratoire',
+    title: 'Laboratory internship',
+    description: 'Professional experience and lab research projects',
     color: 'from-green-500 to-emerald-500',
     icon: 'Briefcase',
     hoverColor: 'hover:border-green-400/50',
@@ -89,385 +102,261 @@ export const projectCategories: CategoryData[] = [
   }
 ];
 
+// ----------------------------------------------------------------------------------------------------
 // Centralized projects data
+// ----------------------------------------------------------------------------------------------------
 export const projectsData: Record<string, Record<string, ProjectData>> = {
   personal: {
     'home-server': {
       id: 'home-server',
-      title: 'Serveur Domestique Proxmox',
-      description: 'Configuration d\'un serveur Proxmox avec VM TrueNAS pour créer un cloud familial sécurisé. Gestion du stockage, sauvegarde automatique et accès distant.',
+      title: 'Proxmox Home Server',
+      description: 'Configuration of a Proxmox server with a TrueNAS VM to create a secure family cloud. Storage management and remote access.',
+      subtitle: 'Building a Private and Scalable Family Cloud',
       detailedDescription: `
-Ce projet consiste en la mise en place d'un serveur domestique complet basé sur Proxmox VE pour créer une infrastructure cloud familiale sécurisée et autonome.
+## Building a Private and Scalable Family Cloud
 
-## Contexte et objectifs
+#### Technologies Used : **Bash**, **Proxmox VE**, **TrueNAS Core**, **Nginx Proxy Manager**
 
-L'objectif était de créer une solution de stockage et de sauvegarde familiale, tout en apprenant les technologies de virtualisation et d'administration système.
+### Project Overview
 
-## Architecture technique
+This project aims to build a self-hosted cloud infrastructure for my family, accessible from anywhere. The goal is to combine security, flexibility, and full control over data, while learning new things in networking, virtualization, and server administration.
 
-- Serveur physique avec Proxmox VE comme hyperviseur
-- Machine virtuelle TrueNAS pour la gestion du stockage
-- Configuration RAID pour la redondance des données
-- Accès distant sécurisé via VPN
-- Sauvegarde automatisée des données critiques
+Rather than relying on public cloud services or buying a prebuilt NAS, I chose to repurpose an old computer and design the system from scratch. The current setup uses an AMD A8-7650K, 32 GB of DDR3 RAM, a 500 GB SSD for system files, and a 500 GB HDD for data. In the long term, I plan to expand to an array of six 4 TB drives configured in RAID-Z1 under ZFS, providing high redundancy and throughput, and add a dedicated GPU for real-time transcoding in Jellyfin.
 
-## Réalisations
+On the software side, I chose Proxmox VE as the hypervisor to manage virtual machines and containers. This choice allows me to experiment directly with virtualization, creating isolated environments for each service. Inside Proxmox, I deployed TrueNAS Community, which acts as the storage backbone of the system. TrueNAS’s native ZFS support makes it easy to manage backup, data optimization, and security tasks. Compared with off-the-shelf NAS systems, TrueNAS gives me complete transparency, open-source flexibility, and full integration with Linux-based tools.
 
-- Mise en place d'un cloud familial avec 4TB de stockage
-- Configuration de sauvegardes automatiques quotidiennes
-- Accès distant sécurisé pour tous les membres de la famille
-- Monitoring et alertes en cas de problème matériel`,
-      technologies: ['Proxmox', 'TrueNAS', 'Virtualisation', 'Réseau'],
-      category: 'personal',
-      status: 'completed',
-      period: '2023 - En cours',
-      location: 'Projet personnel',
-      image: 'https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=1200',
-      gitlabUrl: 'https://gitlab.com/samuel.lecomte37/proxmox-homeserver',
-      featured: true,
-      difficulty: 'advanced',
-      dateCreated: '2023-06-01',
-      keywords: ['virtualisation', 'stockage', 'cloud domestique', 'administration système']
-    },
-    'home-automation': {
-      id: 'home-automation',
-      title: 'Domotique Home Assistant',
-      description: 'Système de domotique basé sur Home Assistant pour contrôler les appareils IoT et automatiser les tâches quotidiennes. Intégration de capteurs, éclairage intelligent et automatisations personnalisées.',
-      detailedDescription: `
-Développement d'un système domotique complet basé sur Home Assistant pour automatiser et contrôler l'ensemble des équipements connectés du domicile.
+For secure remote access, the entire infrastructure sits behind an Nginx Proxy Manager reverse proxy. I purchased a custom domain and configured subdomains that route HTTPS traffic directly to local services. I deliberately avoided using a VPN: while functional, it would have required extra configuration on each client device, reducing usability. 
 
-## Contexte et objectifs
+The system currently supports three main objectives:
+- A virtual machine platform where users can deploy and experiment with different operating systems.  
+- A personal cloud powered by TrueNAS and Nextcloud for file management.
+- A multimedia hub using Jellyfin, where shared libraries of movies, photos, and music are available to all users.
 
-Création d'un écosystème domotique intelligent pour améliorer le confort, la sécurité et l'efficacité énergétique du logement.
+### Future Objectives
 
-## Fonctionnalités implémentées
-
-- Contrôle de l'éclairage intelligent avec scénarios adaptatifs
-- Gestion automatisée du chauffage selon la présence et la météo
-- Système de sécurité avec détection de mouvement et alertes
-- Interface utilisateur personnalisée pour le contrôle à distance
-
-## Technologies et intégrations
-
-- Home Assistant Core avec add-ons personnalisés
-- Capteurs Zigbee et Wi-Fi pour la collecte de données
-- Automatisations Python pour les scénarios complexes
-- Dashboard responsive accessible depuis mobile et desktop`,
-      technologies: ['Home Assistant', 'IoT', 'Python', 'YAML'],
+- Expanding the storage array. 
+- Integrating monitoring tools (Grafana and Prometheus).   
+- Refining user permissions and automated backup policies.`,
+      technologies: ['Proxmox', 'TrueNAS', 'Virtualization', 'Networking', 'NAS', 'server'],
       category: 'personal',
       status: 'in-progress',
-      period: '2024 - En cours',
-      location: 'Domicile',
-      image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=1200',
-      gitlabUrl: 'https://gitlab.com/samuel.lecomte37/home-assistant-config',
+      period: '2025 - Present',
+      location: 'Personal project',
+      image: proxmox,
+      imageCredit : 'Lawrence Systems',
+      imageCreditUrl: 'https://commons.wikimedia.org/wiki/File:Client_Project_Hashcat_Testing_With_an_AMD_Epyc_Supermicro_Nvidia_GPU_Server_Using_Proxmox_%28Lawrence_Systems%29_02.png',
+      gitlabUrl: 'https://gitlab.com/samuel.lecomte37/proxmox-homeserver',
+      difficulty: 'advanced',
+      dateCreated: '2025-07-15',
+      keywords: ['virtualization', 'storage', 'cloud', 'server', 'NAS']
+    },
+    'portfolio-website': {
+      id: 'portfolio-website',
+      title: 'Creating a Portfolio Website',
+      description:
+        'Development of a personal portfolio website to showcase my academic and technical projects.',
+      subtitle: 'Showcasing My Journey in Tech and Physics',
+      detailedDescription: 'Content coming soon...',
+      technologies: ['React', 'TypeScript', 'Vite', 'Tailwind CSS'],
+      category: 'personal',
+      status: 'in-progress',
+      period: '2025',
+      location: 'Personal project',
+      image:
+        'https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=1200',
       difficulty: 'intermediate',
-      dateCreated: '2024-01-15',
-      keywords: ['domotique', 'automatisation', 'IoT', 'smart home']
+      dateCreated: '2025-02-15',
+      keywords: ['portfolio', 'frontend', 'typescript', 'react']
     }
   },
   academic: {
     'data-analysis': {
       id: 'data-analysis',
-      title: 'Analyse des Données - L3',
-      description: 'Présentation du processus de filtrage de données brutes appliqué aux données simulées du HL-LHC pour estimer la présence d\'un \'boson X\'.',
-      detailedDescription: `
-Projet d'analyse de données appliqué aux simulations du futur collisionneur HL-LHC (High-Luminosity Large Hadron Collider) pour la recherche de nouvelles particules.
-
-## Contexte scientifique
-
-Dans le cadre du cours d'analyse de données de L3, étude des méthodes de filtrage et d'analyse statistique appliquées à la physique des particules.
-
-## Méthodologie
-
-- Traitement de données simulées représentant des collisions proton-proton
-- Application de filtres de sélection pour isoler les événements d'intérêt
-- Analyse statistique pour estimer la présence d'un hypothétique "boson X"
-- Calcul de la significativité statistique des résultats
-
-## Outils et techniques
-
-- Python avec NumPy et Matplotlib pour l'analyse
-- Méthodes statistiques avancées (test d'hypothèses, intervalles de confiance)
-- Visualisation des distributions et des corrélations
-- Rédaction d'un rapport scientifique détaillé`,
-      technologies: ['Python', 'Analyse statistique', 'Simulation'],
+      title: 'Introduction to Data Analysis in Physics',
+      description:
+        "Presentation of raw data filtering process applied to HL-LHC simulated data to estimate the presence of an 'X boson'.",
+      subtitle: 'Searching for New Particles in Simulated LHC Data',
+      detailedDescription: 'Content coming soon...',
+      technologies: ['Python', 'Statistical analysis', 'Simulation'],
       category: 'academic',
       status: 'completed',
       period: 'L3 - 2022',
       location: 'Université Clermont Auvergne',
-      image: 'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=800',
-      gitlabUrl: 'https://gitlab.com/samuel.lecomte37/data-analysis-l3',
+      image: data_analysis_L3,
+      gitlabUrl: 'https://github.com/Samuellct/ATLAS-basic-particle-search-workflow',
       difficulty: 'intermediate',
       dateCreated: '2022-03-01',
-      keywords: ['physique des particules', 'analyse statistique', 'python', 'simulation']
+      keywords: ['physics', 'statistics', 'python', 'simulation']
     },
-    'collective-phenomena': {
-      id: 'collective-phenomena',
-      title: 'Phénomènes Collectifs - M1',
-      description: 'Étude du modèle d\'Ising avec écriture d\'un code Python simulant le cas à deux dimensions.',
-      detailedDescription: `
-Implémentation et étude du modèle d'Ising bidimensionnel pour comprendre les transitions de phase dans les systèmes magnétiques.
-
-## Objectifs pédagogiques
-
-Comprendre les phénomènes collectifs et les transitions de phase à travers la simulation numérique du modèle d'Ising.
-
-## Développement technique
-
-- Implémentation de l'algorithme de Metropolis-Hastings en Python
-- Simulation Monte Carlo pour explorer l'espace des configurations
-- Calcul de grandeurs thermodynamiques (aimantation, susceptibilité, chaleur spécifique)
-- Visualisation en temps réel de l'évolution du système
-
-## Résultats obtenus
-
-- Observation de la transition de phase ferromagnétique-paramagnétique
-- Détermination numérique de la température critique
-- Analyse des fluctuations et des corrélations spatiales
-- Validation des prédictions théoriques du modèle`,
-      technologies: ['Python', 'Physique statistique', 'Simulation Monte Carlo'],
+    'ising-model': {
+      id: 'ising-model',
+      title: 'Ising Model',
+      description:
+        'Study of the Ising model with a Python simulation of the two-dimensional case.',
+      subtitle: 'Simulating Phase Transitions in Magnetic Systems',
+      detailedDescription: 'Content coming soon...',
+      technologies: ['Python', 'Statistical physics', 'Monte Carlo simulation'],
       category: 'academic',
       status: 'completed',
       period: 'M1 - 2024',
       location: 'Université Clermont Auvergne',
-      image: 'https://images.pexels.com/photos/355948/pexels-photo-355948.jpeg?auto=compress&cs=tinysrgb&w=800',
+      image: Ising_M1,
+      imageCredit: 'Damian Owls',
+      imageCreditUrl: 'https://commons.wikimedia.org/wiki/File:Ising_Criticality2.gif',
       gitlabUrl: 'https://gitlab.com/samuel.lecomte37/ising-model',
       difficulty: 'intermediate',
       dateCreated: '2024-03-01',
-      keywords: ['physique statistique', 'modèle d\'ising', 'monte carlo', 'transitions de phase']
+      keywords: ['ising', 'monte carlo', 'phase transition']
     },
-    'quantum-mechanics': {
-      id: 'quantum-mechanics',
-      title: 'Mécanique Quantique - M1',
-      description: 'Introduction à l\'informatique quantique et son application à la cryptographie. Simulation Python de l\'algorithme quantique de Shor via la librairie Cirq.',
+    'quantum-algorithms': {
+      id: 'quantum-algorithms',
+      title: 'Quantum Algorithm Demos using Cirq',
+      description: 'Introduction to quantum computing and its application to cryptography. Python simulation of Shor\'s algorithm using the Cirq library.',
+      subtitle: 'Principles of Quantum Computing and Application to Cryptographic Algorithms',
       detailedDescription: `
-Introduction pratique à l'informatique quantique à travers l'implémentation de l'algorithme de Shor pour la factorisation d'entiers.
+This project introduces the fundamentals of quantum computing and explores its implications for cryptography, particularly through the simulation of Shor’s algorithm using Cirq, Google’s quantum framework.
 
-## Contexte théorique
+The work begins with a study of the main quantum concepts such as superposition, entanglement, and measurement, illustrating how qubits can encode and process information in parallel. These principles are then applied to the context of RSA encryption, highlighting how quantum algorithms could threaten current cryptographic systems.
 
-Étude des principes fondamentaux de l'informatique quantique et de leurs applications en cryptographie.
+The core of the project consists of a simulation of Shor’s algorithm, a quantum method for integer factorization that could potentially break RSA encryption by efficiently decomposing large numbers into their prime factors. The algorithm was implemented in Python using Cirq, with several tests comparing classical and quantum-inspired factorization methods. While current hardware limitations prevent real-world execution on large inputs, the simulation demonstrates the mathematical and conceptual power of quantum computing.
 
-## Implémentation technique
-
-- Utilisation de la bibliothèque Cirq de Google pour la simulation quantique
-- Implémentation des portes quantiques nécessaires (Hadamard, CNOT, QFT)
-- Simulation de l'algorithme de Shor pour factoriser des nombres semi-premiers
-- Analyse de la complexité et des avantages quantiques
-
-## Applications cryptographiques
-
-- Démonstration de la vulnérabilité du chiffrement RSA face aux ordinateurs quantiques
-- Étude des implications pour la sécurité informatique moderne
-- Exploration des solutions de cryptographie post-quantique
-- Présentation des enjeux de la course technologique quantique`,
-      technologies: ['Python', 'Cirq', 'Cryptographie quantique'],
+**Main objectives:**
+- Understand the mathematical basis of quantum gates and circuits.
+- Implement and test Shor’s algorithm using Cirq.
+- Evaluate its impact on RSA cryptography.`,
+      technologies: ['Python', 'Cirq', 'Quantum Fourier Transform', 'RSA Cryptography'],
       category: 'academic',
       status: 'completed',
       period: 'M1 - 2024',
       location: 'Université Clermont Auvergne',
-      image: 'https://images.pexels.com/photos/2004161/pexels-photo-2004161.jpeg?auto=compress&cs=tinysrgb&w=800',
-      gitlabUrl: 'https://gitlab.com/samuel.lecomte37/quantum-shor',
+      image: quantumCPU,
+      imageCredit: 'Google',
+      gitlabUrl: 'https://github.com/Samuellct/Cirq-Quantum-Cryptography-Demo',
       difficulty: 'advanced',
-      dateCreated: '2024-02-01',
-      keywords: ['informatique quantique', 'algorithme de shor', 'cryptographie', 'cirq']
+      dateCreated: '2023-11-29',
+      keywords: ['quantum computing', 'Shor’s algorithm', 'RSA', 'Cirq', 'cryptography']
     },
-    'arduino': {
-      id: 'arduino',
-      title: 'Projet Arduino - M1',
-      description: 'Création d\'une station météo composée de plusieurs capteurs et d\'un écran pour visualiser les données.',
-      detailedDescription: `
-Conception et réalisation d'une station météorologique autonome utilisant la plateforme Arduino et divers capteurs environnementaux.
-
-## Objectifs du projet
-
-Développer une solution IoT complète pour la mesure et l'affichage en temps réel de données météorologiques.
-
-## Composants et capteurs
-
-- Microcontrôleur Arduino Uno comme unité centrale
-- Capteur DHT22 pour température et humidité
-- Capteur BMP280 pour pression atmosphérique et altitude
-- Écran LCD 16x2 pour l'affichage des données
-- Module SD pour l'enregistrement historique
-
-## Fonctionnalités développées
-
-- Acquisition de données en temps réel toutes les 30 secondes
-- Affichage rotatif des mesures sur écran LCD
-- Enregistrement des données sur carte SD avec horodatage
-- Calcul de moyennes et détection de tendances
-- Interface série pour monitoring et calibration`,
-      technologies: ['Arduino', 'C++', 'Capteurs IoT'],
+    'arduino-weather': {
+      id: 'arduino-weather',
+      title: 'Arduino Weather Station',
+      description:
+        'Creation of a weather station composed of multiple sensors and a display to visualize data.',
+      subtitle: 'Building a DIY Environmental Monitoring System',
+      detailedDescription: 'Content coming soon...',
+      technologies: ['Arduino', 'C++', 'IoT sensors'],
       category: 'academic',
       status: 'completed',
       period: 'M1 - 2024',
       location: 'Université Clermont Auvergne',
-      image: 'https://images.pexels.com/photos/2582937/pexels-photo-2582937.jpeg?auto=compress&cs=tinysrgb&w=800',
+      image: arduinoM1,
       gitlabUrl: 'https://gitlab.com/samuel.lecomte37/arduino-weather-station',
       difficulty: 'beginner',
-      dateCreated: '2024-01-01',
-      keywords: ['arduino', 'capteurs', 'station météo', 'iot']
+      dateCreated: '2025-01-22',
+      keywords: ['arduino', 'iot', 'sensors', 'weather']
     },
     'labview': {
       id: 'labview',
-      title: 'Projet LabVIEW - M1',
-      description: 'Développement d\'un environnement LabVIEW pour contrôler un détecteur à muons avec analyse graphique des données.',
-      detailedDescription: `
-Développement d'une interface graphique LabVIEW pour le contrôle et l'analyse de données d'un détecteur de muons cosmiques.
-
-## Contexte expérimental
-
-Les muons cosmiques sont des particules issues des rayons cosmiques qui traversent constamment l'atmosphère terrestre.
-
-## Interface développée
-
-- Panneau de contrôle pour paramétrer l'acquisition de données
-- Visualisation en temps réel des signaux détectés
-- Analyse automatique des événements muoniques
-- Calcul statistique du flux de muons
-- Sauvegarde des données dans différents formats
-
-## Fonctionnalités avancées
-
-- Filtrage numérique des signaux pour réduire le bruit
-- Détection automatique des coïncidences entre détecteurs
-- Histogrammes en temps réel des distributions d'énergie
-- Interface utilisateur intuitive avec indicateurs visuels
-- Système d'alarmes pour les dysfonctionnements`,
-      technologies: ['LabVIEW', 'Acquisition de données', 'Interface graphique'],
+      title: 'Measurement of the Muon Landé *g*-Factor',
+      description:
+        'Development of a LabVIEW interface to control a muon detector with real-time graphical data analysis.',
+      subtitle: 'Real-Time Particle Detection and Analysis',
+      detailedDescription: 'Content coming soon...',
+      technologies: ['LabVIEW', 'Data acquisition', 'GUI'],
       category: 'academic',
       status: 'completed',
       period: 'M1 - 2024',
       location: 'Université Clermont Auvergne',
-      image: 'https://images.pexels.com/photos/2004161/pexels-photo-2004161.jpeg?auto=compress&cs=tinysrgb&w=800',
+      image: LabVIEW_muon_M1,
+      imageCredit: 'Aldhair.gsnt',
+      imageCreditUrl: 'https://commons.wikimedia.org/wiki/File:Labview_code_example.png',
       gitlabUrl: 'https://gitlab.com/samuel.lecomte37/labview-muon-detector',
       difficulty: 'intermediate',
       dateCreated: '2024-01-15',
-      keywords: ['labview', 'acquisition de données', 'muons cosmiques', 'interface graphique']
+      keywords: ['labview', 'muons', 'data acquisition']
     },
-    'particle-physics': {
-      id: 'particle-physics',
-      title: 'Physique des Particules - M1',
-      description: 'Acquisition de données via un détecteur à muons et analyse avec ROOT pour déterminer le temps de vie des muons.',
-      detailedDescription: `
-Mesure expérimentale du temps de vie des muons cosmiques en utilisant un détecteur dédié et l'analyse de données avec ROOT.
-
-## Principe physique
-
-Les muons sont des particules instables qui se désintègrent avec un temps de vie caractéristique de 2,2 microsecondes.
-
-## Protocole expérimental
-
-- Acquisition de données avec un détecteur de muons à scintillateurs
-- Mesure des temps d'arrivée et de désintégration des muons
-- Traitement des signaux électroniques et conversion numérique
-- Analyse statistique des distributions temporelles
-
-## Analyse avec ROOT
-
-- Importation et nettoyage des données expérimentales
-- Ajustement exponentiel des distributions de temps de vie
-- Calcul d'incertitudes et validation statistique
-- Comparaison avec les valeurs théoriques de référence
-- Génération de graphiques et rapports d'analyse`,
-      technologies: ['ROOT', 'C++', 'Analyse statistique'],
+    'muon-lifetime': {
+      id: 'muon-lifetime',
+      title: 'Muon Lifetime Measurement',
+      description:
+        'Data acquisition with a muon detector and analysis using ROOT to determine muon lifetime.',
+      subtitle: 'Measuring Fundamental Particle Properties',
+      detailedDescription: 'Content coming soon...',
+      technologies: ['ROOT', 'C++', 'Statistical analysis'],
       category: 'academic',
       status: 'completed',
       period: 'M1 - 2024',
       location: 'Université Clermont Auvergne',
-      image: 'https://images.pexels.com/photos/2004161/pexels-photo-2004161.jpeg?auto=compress&cs=tinysrgb&w=800',
+      image: muon_lifetime,
+      imageCredit: 'Mrmw',
+      imageCreditUrl: 'https://commons.wikimedia.org/wiki/File:Muon_Decay.svg',
       gitlabUrl: 'https://gitlab.com/samuel.lecomte37/muon-lifetime-analysis',
       difficulty: 'advanced',
       dateCreated: '2024-02-15',
-      keywords: ['physique des particules', 'root', 'muons', 'analyse statistique']
+      keywords: ['muons', 'root', 'particle physics']
+    },
+    'saturn-rings': {
+      id: 'saturn-rings',
+      title: 'Stability of Saturn\'s Rings',
+      description: 'Study of the dynamic stability and chaotic regime of Saturn\'s rings.',
+      subtitle: 'Exploring Orbital Dynamics and Chaos Theory',
+      detailedDescription: 'Content coming soon...',
+      technologies: ['Python', 'Astrophysics', 'Modeling'],
+      category: 'academic',
+      status: 'completed',
+      period: 'L3 - 2023',
+      location: 'Université Clermont Auvergne',
+      image: saturn_chaos_L3,
+      imageCredit: 'NASA, ESA, A. Simon, and M.H. Wong',
+      imageCreditUrl: 'https://esahubble.org/images/heic1917a/',
+      difficulty: 'intermediate',
+      dateCreated: '2023-04-15',
+      keywords: ['astrophysics', 'planetary science', 'simulation']
+    },
+    'arduino-anemometer': {
+      id: 'arduino-anemometer',
+      title: 'Arduino-Controlled Anemometer',
+      description: 'Design and calibration of a wind-speed measurement system using Arduino.',
+      subtitle: 'Designing Precision Wind Measurement Tools',
+      detailedDescription: 'Content coming soon...',
+      technologies: ['Arduino', 'C++', 'Sensors', 'Electronics'],
+      category: 'academic',
+      status: 'completed',
+      period: 'M1 - 2024',
+      location: 'Université Clermont Auvergne',
+      image: arduinoM2,
+      difficulty: 'beginner',
+      dateCreated: '2024-03-10',
+      keywords: ['arduino', 'anemometer', 'sensors', 'wind measurement']
     }
   },
   internship: {
     'internship-m1': {
       id: 'internship-m1',
-      title: 'Stage de Master 1 LPCA - Équipe LHCb',
-      description: 'Étude d\'un mode de désintégration rare du méson B. Développement de scripts d\'analyse de données avec ROOT pour le Run I de LHCb.',
-      detailedDescription: `
-Stage de recherche au Laboratoire de Physique Corpusculaire et d'Astrophysique (LPCA) dans l'équipe LHCb pour l'étude des désintégrations rares de mésons B.
-
-## Contexte scientifique
-
-L'expérience LHCb au CERN étudie la violation de CP et les désintégrations rares de hadrons beaux pour rechercher une physique au-delà du Modèle Standard.
-
-## Objectifs du stage
-
-- Analyser un mode de désintégration rare du méson B
-- Développer des outils d'analyse de données avec ROOT
-- Optimiser les critères de sélection des événements
-- Estimer les bruits de fond et calculer les rapports d'embranchement
-
-## Réalisations techniques
-
-- Développement de scripts C++/ROOT pour l'analyse de données
-- Implémentation d'algorithmes de sélection d'événements
-- Analyse statistique des distributions de masse invariante
-- Validation des résultats par comparaison avec la littérature
-
-## Résultats obtenus
-
-- Mise en évidence du signal recherché dans les données du Run I
-- Estimation précise du bruit de fond combinatoire
-- Calcul du rapport d'embranchement avec incertitudes statistiques
-- Présentation des résultats à l'équipe de recherche`,
-      technologies: ['ROOT', 'C++', 'Analyse de données', 'Physique des particules'],
+      title: 'Master 1 Internship - LPCA (LHCb Team)',
+      description: 'Study of a rare B meson decay mode. Development of data analysis scripts with ROOT for LHCb Run I.',
+      subtitle: 'Investigating Rare Decay Channels in B Mesons',
+      detailedDescription: `Content coming soon...`,
+      technologies: ['ROOT', 'C++', 'Data analysis', 'Particle physics'],
       category: 'internship',
       status: 'completed',
-      period: 'Avril - Juin 2024',
-      location: 'Aubière (63170)',
-      image: 'https://images.pexels.com/photos/2004161/pexels-photo-2004161.jpeg?auto=compress&cs=tinysrgb&w=800',
+      period: 'April - June 2024',
+      location: 'Aubière, France',
+      featured: true,
       difficulty: 'advanced',
       dateCreated: '2024-04-01',
       keywords: ['lhcb', 'physique des particules', 'root', 'analyse de données']
     },
     'internship-m2': {
       id: 'internship-m2',
-      title: 'Stage de Master 2 LPCA - Équipe ATLAS',
-      description: 'Génération et analyse d\'événements simulés pour évaluer la faisabilité de recherches de particules à longue durée de vie (LLP) au HL-LHC.',
-      detailedDescription: `
-Stage de recherche au LPCA dans l'équipe ATLAS pour l'étude de la faisabilité de recherches de particules à longue durée de vie au futur HL-LHC.
-
-## Contexte scientifique
-
-Les particules à longue durée de vie (LLP) sont prédites par de nombreux modèles de physique au-delà du Modèle Standard et constituent une signature expérimentale distinctive.
-
-## Objectifs du stage
-
-- Générer des événements simulés de production de LLP
-- Analyser les signatures expérimentales dans le détecteur ATLAS
-- Optimiser les stratégies de déclenchement et de reconstruction
-- Estimer les performances de détection au HL-LHC
-
-## Méthodologie
-
-- Génération d'événements avec MadGraph pour différents scénarios HAHM
-- Simulation de la réponse du détecteur avec les outils ATLAS
-- Développement d'algorithmes de reconstruction des vertex déplacés
-- Analyse statistique des distributions cinématiques
-
-## Technologies utilisées
-
-- MadGraph pour la génération d'événements Monte Carlo
-- Pythia pour la simulation de la gerbe partonique
-- Rivet pour l'analyse phénoménologique
-- Outils de développement Git et Docker pour la collaboration
-
-## Résultats attendus
-
-- Caractérisation des signatures LLP dans ATLAS
-- Optimisation des critères de sélection
-- Estimation de l'acceptance et de l'efficacité de détection
-- Évaluation du potentiel de découverte au HL-LHC`,
-      technologies: ['MadGraph', 'Pythia', 'Rivet', 'C++', 'git & docker'],
+      title: 'Master 2 Internship - LPCA (ATLAS Team)',
+      description: 'Generation and analysis of simulated events to evaluate the feasibility of searches for long-lived particles (LLPs) at the HL-LHC.',
+      subtitle: 'Pioneering Searches for Long-Lived Particles',
+      detailedDescription: `Content coming soon...`,
+      technologies: ['MadGraph', 'Pythia', 'Docker', 'C++', 'git'],
       category: 'internship',
-      status: 'in-progress',
-      period: 'Février - Juillet 2025',
-      location: 'Aubière (63170)',
-      image: 'https://images.pexels.com/photos/2004161/pexels-photo-2004161.jpeg?auto=compress&cs=tinysrgb&w=800',
+      status: 'completed',
+      period: 'February - July 2025',
+      location: 'Aubière, France',
       featured: true,
       difficulty: 'advanced',
       dateCreated: '2025-02-01',
@@ -476,38 +365,18 @@ Les particules à longue durée de vie (LLP) sont prédites par de nombreux mod�
   }
 };
 
+// ----------------------------------------------------------------------------------------------------
 // Categories data
+// ----------------------------------------------------------------------------------------------------
 export const categoriesData: Record<string, CategoryData> = {
-  personal: {
-    id: 'personal',
-    title: 'Projets Personnels',
-    description: 'Projets développés de manière autonome pour explorer de nouvelles technologies',
-    color: 'from-blue-500 to-cyan-500',
-    icon: 'User',
-    hoverColor: 'hover:border-blue-400/50',
-    bgGradient: 'from-blue-900/20 to-cyan-900/20'
-  },
-  academic: {
-    id: 'academic',
-    title: 'Projets Académiques',
-    description: 'Travaux réalisés dans le cadre de mes études universitaires',
-    color: 'from-purple-500 to-violet-500',
-    icon: 'GraduationCap',
-    hoverColor: 'hover:border-purple-400/50',
-    bgGradient: 'from-purple-900/20 to-violet-900/20'
-  },
-  internship: {
-    id: 'internship',
-    title: 'Stages & Recherche',
-    description: 'Expériences professionnelles et projets de recherche en laboratoire',
-    color: 'from-green-500 to-emerald-500',
-    icon: 'Briefcase',
-    hoverColor: 'hover:border-green-400/50',
-    bgGradient: 'from-green-900/20 to-emerald-900/20'
-  }
+  personal: projectCategories[0],
+  academic: projectCategories[1],
+  internship: projectCategories[2]
 };
 
+// ----------------------------------------------------------------------------------------------------
 // Helper functions
+// ----------------------------------------------------------------------------------------------------
 export const getProjectById = (categoryId: string, projectId: string): ProjectData | null => {
   return projectsData[categoryId]?.[projectId] || null;
 };
