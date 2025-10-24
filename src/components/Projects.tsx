@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   ExternalLink,
   Server,
@@ -22,7 +22,7 @@ const Projects: React.FC = () => {
     triggerOnce: true,
     threshold: 0.1,
   });
-  const navigate = useNavigate();
+
   const [filter, setFilter] = useState<'all' | 'academic' | 'personal'>('all');
 
   // Get projects from centralized data
@@ -85,16 +85,6 @@ const Projects: React.FC = () => {
     (project) => filter === 'all' || project.category === filter
   );
 
-  const filterButtons = [
-    { key: 'all' as const, label: 'All' },
-    { key: 'personal' as const, label: 'Personal' },
-    { key: 'academic' as const, label: 'Academic' },
-  ];
-
-  const handleProjectClick = (projectId: string) => {
-    navigate(`/project/${projectId}`);
-  };
-
   // Work Experience data depuis en.json
   const workTitle: string = (en as any)?.workExperience?.title ?? 'Work Experience';
   const workJobs: WorkJob[] = ((en as any)?.workExperience?.jobs ?? []) as WorkJob[];
@@ -108,7 +98,9 @@ const Projects: React.FC = () => {
           transition={{ duration: 0.8 }}
           className="max-w-7xl mx-auto"
         >
-          <h2 className="text-4xl font-bold text-center mb-4">Projects & professional experience</h2>
+          <h2 className="text-4xl font-bold text-center mb-4">
+            Projects & professional experience
+          </h2>
 
           {/* Internship Highlights */}
           {internships.length > 0 && (
@@ -181,9 +173,7 @@ const Projects: React.FC = () => {
                       <p className="text-slate-400 text-sm mb-1">
                         {job.period}
                       </p>
-                      <p className="text-slate-400 text-sm">
-                        {job.location}
-                      </p>
+                      <p className="text-slate-400 text-sm">{job.location}</p>
                     </motion.div>
                   ))}
                 </div>
@@ -203,7 +193,7 @@ const Projects: React.FC = () => {
                 { key: 'all' as const, label: 'All' },
                 { key: 'personal' as const, label: 'Personal' },
                 { key: 'academic' as const, label: 'Academic' },
-              ].map((button) => (            
+              ].map((button) => (
                 <button
                   key={button.key}
                   onClick={() => setFilter(button.key)}
@@ -219,66 +209,60 @@ const Projects: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Projects Grid */}
+          {/* ✅ Projects Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProjects.map((project, index) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.8, delay: 0.1 * index }}
-                whileHover={{ y: -10 }}
-                onClick={() => handleProjectClick(project.id)}
-                className="bg-slate-800 rounded-xl overflow-hidden border border-slate-700 hover:border-blue-500/50 transition-all duration-300 group cursor-pointer"
-              >
-                <div className="relative overflow-hidden">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <div className="text-white">
-                      {getProjectIcon(project.icon)}
+              <Link key={project.id} to={`/project/${project.id}`} className="block group">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={inView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.8, delay: 0.1 * index }}
+                  whileHover={{ y: -10 }}
+                  className="bg-slate-800 rounded-xl overflow-hidden border border-slate-700 hover:border-blue-500/50 transition-all duration-300"
+                >
+                  <div className="relative overflow-hidden">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <div className="text-white">{getProjectIcon(project.icon)}</div>
+                      <div className="absolute bottom-4 right-4 bg-blue-600 p-2 rounded-full">
+                        <ExternalLink size={16} className="text-white" />
+                      </div>
                     </div>
-                    <div className="absolute bottom-4 right-4 bg-blue-600 p-2 rounded-full">
-                      <ExternalLink size={16} className="text-white" />
-                    </div>
-                  </div>
-                  <div className="absolute top-4 right-4">
-                    <span
-                      className={`px-3 py-1 text-xs rounded-full font-medium ${
-                        project.category === 'personal'
-                          ? 'bg-blue-600/80 text-blue-100'
-                          : 'bg-purple-600/80 text-purple-100'
-                      }`}
-                    >
-                      {project.category === 'personal' ? 'Personal' : 'Academic'}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-3 text-white">
-                    {project.title}
-                  </h3>
-
-                  <p className="text-slate-400 text-sm mb-4 line-clamp-3">
-                    {project.description}
-                  </p>
-
-                  <div className="flex flex-wrap gap-2">
-                    {project.technologies.map((tech) => (
+                    <div className="absolute top-4 right-4">
                       <span
-                        key={tech}
-                        className="px-3 py-1 bg-slate-700/80 text-xs rounded-full text-white font-medium border border-slate-600"
+                        className={`px-3 py-1 text-xs rounded-full font-medium ${
+                          project.category === 'personal'
+                            ? 'bg-blue-600/80 text-blue-100'
+                            : 'bg-purple-600/80 text-purple-100'
+                        }`}
                       >
-                        {tech}
+                        {project.category === 'personal' ? 'Personal' : 'Academic'}
                       </span>
-                    ))}
+                    </div>
                   </div>
-                </div>
-              </motion.div>
+
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold mb-3 text-white group-hover:text-blue-400 transition-colors duration-300">
+                      {project.title}
+                    </h3>
+                    <p className="text-slate-400 text-sm mb-4 line-clamp-3">{project.description}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {project.technologies.map((tech) => (
+                        <span
+                          key={tech}
+                          className="px-3 py-1 bg-slate-700/80 text-xs rounded-full text-white font-medium border border-slate-600"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              </Link>
             ))}
           </div>
         </motion.div>

@@ -11,14 +11,32 @@ const FloatingProjectNav: React.FC<FloatingProjectNavProps> = ({ projectId }) =>
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Back button : return to homepage and scroll to project section
   const handleBack = useCallback(() => {
-    if (projectId) navigate('/project', { replace: true });
-    else navigate('/', { replace: true });
-  }, [navigate, projectId]);
+    navigate('/', { replace: true });
 
-  const handleHome = useCallback(() => navigate('/', { replace: true }), [navigate]);
+    // Delay scroll until navigation is complete
+    setTimeout(() => {
+      const projectSection = document.getElementById('projects');
+      if (projectSection) {
+        projectSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        window.scrollTo({ top: 1600, behavior: 'smooth' }); // fallback scroll position
+      }
+    }, 400);
+  }, [navigate]);
 
-  const labels = { back: 'Back', home: 'Home' };
+  // Home button
+  const handleHome = useCallback(() => {
+    navigate('/', { replace: true });
+  }, [navigate]);
+
+  // Projects button
+  const handleProjects = useCallback(() => {
+    navigate('/project', { replace: true });
+  }, [navigate]);
+
+  const labels = { back: 'Back', home: 'Home', projects: 'All projects' };
 
   const navItems = useMemo(
     () => [
@@ -34,8 +52,14 @@ const FloatingProjectNav: React.FC<FloatingProjectNavProps> = ({ projectId }) =>
         onClick: handleHome,
         color: 'hover:bg-blue-600',
       },
+      {
+        icon: <FolderKanban size={20} />,
+        label: labels.projects,
+        onClick: handleProjects,
+        color: 'hover:bg-purple-600',
+      },
     ],
-    [handleBack, handleHome, labels]
+    [handleBack, handleHome, handleProjects, labels]
   );
 
   return (

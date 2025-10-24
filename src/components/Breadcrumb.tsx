@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { ChevronRight, Home } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getCategoryById, getArticleById } from '../data/blogData';
@@ -13,7 +13,6 @@ interface BreadcrumbItem {
 
 const Breadcrumb: React.FC = () => {
   const location = useLocation();
-  const navigate = useNavigate();
 
   // Split the path into segments
   const pathSegments = location.pathname.split('/').filter(Boolean);
@@ -94,10 +93,6 @@ const Breadcrumb: React.FC = () => {
 
   const breadcrumbs = generateBreadcrumbs();
 
-  const handleNavigation = (path: string) => {
-    navigate(path);
-  };
-
   return (
     <motion.nav
       initial={{ opacity: 0, y: -10 }}
@@ -126,16 +121,19 @@ const Breadcrumb: React.FC = () => {
                 {item.label}
               </span>
             ) : (
-              <motion.button
-                onClick={() => handleNavigation(item.path)}
+              <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="text-slate-400 hover:text-white transition-colors duration-200 truncate max-w-[150px] sm:max-w-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 focus:ring-offset-slate-900 rounded px-1 py-0.5"
-                aria-label={`Go to ${item.label}`}
               >
-                {index === 0 && <Home size={14} className="inline mr-1" aria-hidden="true" />}
-                {item.label}
-              </motion.button>
+                <Link
+                  to={item.path}
+                  className="text-slate-400 hover:text-white transition-colors duration-200 truncate max-w-[150px] sm:max-w-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 focus:ring-offset-slate-900 rounded px-1 py-0.5 inline-flex items-center"
+                  aria-label={`Go to ${item.label}`}
+                >
+                  {index === 0 && <Home size={14} className="inline mr-1" aria-hidden="true" />}
+                  {item.label}
+                </Link>
+              </motion.div>
             )}
           </li>
         ))}

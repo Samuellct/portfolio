@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Calendar, Clock, Heart, MessageCircle, User, Tag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import FloatingNav from './FloatingNav';
@@ -9,7 +9,6 @@ import { getArticleById, getRelatedArticles, getArticlePreview, articlesData, ty
 
 const BlogArticle: React.FC = () => {
   const { categoryId, articleId } = useParams<{ categoryId: string; articleId: string }>();
-  const navigate = useNavigate();
 
   const [likes, setLikes] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
@@ -25,7 +24,7 @@ const BlogArticle: React.FC = () => {
     if (!categoryId || !articleId) return null;
     return getArticleById(categoryId, articleId);
   }, [categoryId, articleId]);
-  
+
   const relatedArticles = useMemo(() => {
     if (!articleData || !categoryId) return [];
     return getRelatedArticles(articleData.id, categoryId, 3);
@@ -186,11 +185,9 @@ const BlogArticle: React.FC = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="mb-12"
+            className="mb-12 prose prose-lg prose-invert max-w-none text-justify"
           >
-            <div className="prose prose-lg prose-invert max-w-none text-justify">
-              <ReactMarkdown>{articleData.content}</ReactMarkdown>
-            </div>
+            <ReactMarkdown>{articleData.content}</ReactMarkdown>
           </motion.article>
 
           {/* Like Button */}
@@ -225,22 +222,10 @@ const BlogArticle: React.FC = () => {
             className="bg-slate-800/30 p-6 rounded-xl border border-slate-700 mb-12"
           >
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400">
-              <div className="flex items-center gap-2">
-                <Calendar size={16} />
-                <span>Published on {articleData.date}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock size={16} />
-                <span>{articleData.readTime}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <User size={16} />
-                <span>{articleData.author}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Tag size={16} />
-                <span>{articleData.category}</span>
-              </div>
+              <div className="flex items-center gap-2"><Calendar size={16} /><span>Published on {articleData.date}</span></div>
+              <div className="flex items-center gap-2"><Clock size={16} /><span>{articleData.readTime}</span></div>
+              <div className="flex items-center gap-2"><User size={16} /><span>{articleData.author}</span></div>
+              <div className="flex items-center gap-2"><Tag size={16} /><span>{articleData.category}</span></div>
             </div>
           </motion.div>
 
@@ -262,71 +247,64 @@ const BlogArticle: React.FC = () => {
               </h3>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {relatedArticles.map((article, index) => (
-                  <motion.div
-                    key={article.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: 1.4 + index * 0.1 }}
-                    whileHover={{ y: -5, scale: 1.02 }}
-                    onClick={() => {
-                      let articleCategoryId = '';
-                      Object.keys(articlesData).forEach(catId => {
-                        if (articlesData[catId][article.id]) {
-                          articleCategoryId = catId;
-                        }
-                      });
-                      navigate(`/blog/${articleCategoryId}/${article.id}`);
-                    }}
-                    className="bg-slate-700/30 rounded-lg border border-slate-600 hover:border-blue-500/50 transition-all duration-300 cursor-pointer group overflow-hidden"
-                  >
-                    <div className="relative">
-                      <img
-                        src={article.image}
-                        alt={article.title}
-                        className="w-full h-32 object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
-                      <div className="absolute top-2 left-2">
-                        <span className="px-2 py-1 text-xs bg-blue-600/80 text-blue-100 rounded-full font-medium">
-                          {article.category}
-                        </span>
-                      </div>
-                    </div>
+                {relatedArticles.map((article, index) => {
+                  let articleCategoryId = '';
+                  Object.keys(articlesData).forEach(catId => {
+                    if (articlesData[catId][article.id]) {
+                      articleCategoryId = catId;
+                    }
+                  });
 
-                    <div className="p-4">
-                      <h4 className="font-semibold text-white mb-2 line-clamp-2 group-hover:text-blue-400 transition-colors duration-300">
-                        {article.title}
-                      </h4>
-
-                      <div className="flex items-center gap-3 text-xs text-slate-400 mb-3">
-                        <div className="flex items-center gap-1">
-                          <Calendar size={12} />
-                          <span>{article.date}</span>
+                  return (
+                    <Link
+                      key={article.id}
+                      to={`/blog/${articleCategoryId}/${article.id}`}
+                      className="group"
+                    >
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 1.4 + index * 0.1 }}
+                        whileHover={{ y: -5, scale: 1.02 }}
+                        className="bg-slate-700/30 rounded-lg border border-slate-600 hover:border-blue-500/50 transition-all duration-300 overflow-hidden"
+                      >
+                        <div className="relative">
+                          <img
+                            src={article.image}
+                            alt={article.title}
+                            className="w-full h-32 object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+                          <div className="absolute top-2 left-2">
+                            <span className="px-2 py-1 text-xs bg-blue-600/80 text-blue-100 rounded-full font-medium">
+                              {article.category}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <Clock size={12} />
-                          <span>{article.readTime}</span>
+
+                        <div className="p-4">
+                          <h4 className="font-semibold text-white mb-2 line-clamp-2 group-hover:text-blue-400 transition-colors duration-300">
+                            {article.title}
+                          </h4>
+                          <div className="flex items-center gap-3 text-xs text-slate-400 mb-3">
+                            <div className="flex items-center gap-1"><Calendar size={12} /><span>{article.date}</span></div>
+                            <div className="flex items-center gap-1"><Clock size={12} /><span>{article.readTime}</span></div>
+                          </div>
+                          <p className="text-slate-400 text-sm line-clamp-2 mb-3">
+                            {getArticlePreview(article.content)}
+                          </p>
+                          <div className="flex flex-wrap gap-1">
+                            {article.keywords.slice(0, 2).map((keyword) => (
+                              <span key={keyword} className="px-2 py-1 bg-slate-600/50 text-slate-400 text-xs rounded-full">
+                                {keyword}
+                              </span>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-
-                      <p className="text-slate-400 text-sm line-clamp-2 mb-3">
-                        {getArticlePreview(article.content)}
-                      </p>
-
-                      <div className="flex flex-wrap gap-1">
-                        {article.keywords.slice(0, 2).map((keyword) => (
-                          <span
-                            key={keyword}
-                            className="px-2 py-1 bg-slate-600/50 text-slate-400 text-xs rounded-full"
-                          >
-                            {keyword}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
+                      </motion.div>
+                    </Link>
+                  );
+                })}
               </div>
             </motion.div>
           )}
@@ -387,9 +365,7 @@ const BlogArticle: React.FC = () => {
                 >
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-semibold text-white">{comment.author}</h4>
-                    <span className="text-sm text-slate-400">
-                      {formatCommentDate(comment.date)}
-                    </span>
+                    <span className="text-sm text-slate-400">{formatCommentDate(comment.date)}</span>
                   </div>
                   <p className="text-slate-300 leading-relaxed">{comment.content}</p>
                 </motion.div>

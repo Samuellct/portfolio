@@ -1,11 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Search,
-  ListFilter as Filter,
-  Import as SortAsc,
-  Dessert as SortDesc,
+  SortAsc,
+  SortDesc,
   Grid3x2 as Grid3X3,
   List,
   Calendar,
@@ -33,9 +32,6 @@ interface BlogPost extends ArticleData {
 }
 
 const BlogListing: React.FC = () => {
-  const navigate = useNavigate();
-  const handleGoHome = () => navigate('/');
-
   // State management
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -62,13 +58,13 @@ const BlogListing: React.FC = () => {
       const categoryData = categories.find((cat) => cat.id === categoryId);
       if (categoryData) {
         Object.values(articlesData[categoryId])
-          .filter((article) => article.visible !== false) // Cacher les articles non visibles
+          .filter((article) => article.visible !== false) // masquer les articles non visibles
           .forEach((article) => {
-          posts.push({
-            ...article,
-            categoryData,
+            posts.push({
+              ...article,
+              categoryData,
+            });
           });
-        });
       }
     });
 
@@ -102,11 +98,9 @@ const BlogListing: React.FC = () => {
 
     filtered.sort((a, b) => {
       let comparison = 0;
-
       switch (sortBy) {
         case 'date':
-          comparison =
-            new Date(a.date).getTime() - new Date(b.date).getTime();
+          comparison = new Date(a.date).getTime() - new Date(b.date).getTime();
           break;
         case 'title':
           comparison = a.title.localeCompare(b.title);
@@ -117,7 +111,6 @@ const BlogListing: React.FC = () => {
           comparison = aTime - bTime;
           break;
       }
-
       return sortOrder === 'asc' ? comparison : -comparison;
     });
 
@@ -145,10 +138,6 @@ const BlogListing: React.FC = () => {
       default:
         return <BookOpen size={20} />;
     }
-  };
-
-  const handlePostClick = (post: BlogPost) => {
-    navigate(`/blog/${post.categoryData.id}/${post.id}`);
   };
 
   if (isLoading) {
@@ -188,9 +177,7 @@ const BlogListing: React.FC = () => {
                 All Articles
               </h1>
               <p className="text-xl text-slate-300 max-w-3xl">
-                Discover all my articles about science, technology, and my
-                personal adventures. Each article shares my experiences and
-                insights across different fields.
+                Discover all my articles about science, technology, and my personal adventures.
               </p>
             </motion.div>
           </div>
@@ -294,7 +281,7 @@ const BlogListing: React.FC = () => {
                 </div>
               </div>
 
-              {/* View Mode */}
+              {/* View Mode + Home */}
               <div className="flex flex-col justify-end">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-slate-400 mr-2">View:</span>
@@ -321,9 +308,10 @@ const BlogListing: React.FC = () => {
                     <List size={18} />
                   </button>
                 </div>
-                <button
-                  onClick={handleGoHome}
-                  className="ml-4 mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center gap-2"
+
+                <Link
+                  to="/"
+                  className="ml-0 md:ml-4 mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300"
                   aria-label="Go home"
                 >
                   <svg
@@ -338,7 +326,7 @@ const BlogListing: React.FC = () => {
                     <polyline points="9,22 9,12 15,12 15,22" />
                   </svg>
                   Home
-                </button>
+                </Link>
               </div>
             </div>
 
@@ -390,104 +378,99 @@ const BlogListing: React.FC = () => {
                 }
               >
                 {paginatedPosts.map((post, index) => (
-                  <motion.article
+                  <Link
                     key={post.id}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                    whileHover={{ y: -5 }}
-                    onClick={() => handlePostClick(post)}
-                    className={`bg-slate-800/50 rounded-xl border border-slate-700 hover:border-blue-500/50 transition-all duration-300 cursor-pointer group overflow-hidden ${
-                      viewMode === 'list' ? 'flex' : ''
-                    }`}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        handlePostClick(post);
-                      }
-                    }}
-                    aria-label={`Read article ${post.title}`}
+                    to={`/blog/${post.categoryData.id}/${post.id}`}
+                    className="block group"
                   >
-                    <div
-                      className={`relative overflow-hidden ${
-                        viewMode === 'list' ? 'w-48 flex-shrink-0' : 'h-48'
+                    <motion.article
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: index * 0.1 }}
+                      whileHover={{ y: -5 }}
+                      className={`bg-slate-800/50 rounded-xl border border-slate-700 hover:border-blue-500/50 transition-all duration-300 overflow-hidden ${
+                        viewMode === 'list' ? 'flex' : ''
                       }`}
                     >
-                      <img
-                        src={post.image}
-                        alt={post.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <div className="text-white">
-                          {getCategoryIcon(post.categoryData.icon)}
+                      <div
+                        className={`relative overflow-hidden ${
+                          viewMode === 'list' ? 'w-48 flex-shrink-0' : 'h-48'
+                        }`}
+                      >
+                        <img
+                          src={post.image}
+                          alt={post.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                          <div className="text-white">
+                            {getCategoryIcon(post.categoryData.icon)}
+                          </div>
+                          <div className="absolute bottom-4 right-4 bg-blue-600 p-2 rounded-full">
+                            <ExternalLink size={16} className="text-white" />
+                          </div>
                         </div>
-                        <div className="absolute bottom-4 right-4 bg-blue-600 p-2 rounded-full">
-                          <ExternalLink size={16} className="text-white" />
-                        </div>
-                      </div>
-                      <div className="absolute top-4 left-4">
-                        <span
-                          className={`px-3 py-1 text-xs rounded-full font-medium bg-gradient-to-r ${post.categoryData.color} text-white`}
-                        >
-                          {post.categoryData.title}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="p-6 flex-1">
-                      <div className="flex items-center gap-4 text-sm text-slate-400 mb-3">
-                        <div className="flex items-center gap-1">
-                          <Calendar size={14} />
-                          <span>{post.date}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock size={14} />
-                          <span>{post.readTime}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <User size={14} />
-                          <span>{post.author}</span>
-                        </div>
-                      </div>
-
-                      <h3 className="text-xl font-semibold text-white group-hover:text-blue-400 transition-colors duration-300 line-clamp-2 mb-3">
-                        {post.title}
-                      </h3>
-
-                      <p className="text-slate-400 text-sm mb-4 line-clamp-3 leading-relaxed">
-                        {getArticlePreview(post.content)}
-                      </p>
-
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {post.keywords
-                          .slice(0, viewMode === 'list' ? 4 : 3)
-                          .map((keyword) => (
-                            <span
-                              key={keyword}
-                              className="px-2 py-1 bg-slate-700/80 text-xs rounded-full text-slate-300 font-medium border border-slate-600"
-                            >
-                              {keyword}
-                            </span>
-                          ))}
-                        {post.keywords.length >
-                          (viewMode === 'list' ? 4 : 3) && (
-                          <span className="px-2 py-1 bg-slate-600/50 text-xs rounded-full text-slate-400 font-medium">
-                            +{post.keywords.length -
-                              (viewMode === 'list' ? 4 : 3)}
+                        <div className="absolute top-4 left-4">
+                          <span
+                            className={`px-3 py-1 text-xs rounded-full font-medium bg-gradient-to-r ${post.categoryData.color} text-white`}
+                          >
+                            {post.categoryData.title}
                           </span>
-                        )}
+                        </div>
                       </div>
 
-                      <div className="text-xs text-slate-500 flex items-center gap-1">
-                        <Tag size={12} />
-                        {post.category}
+                      <div className="p-6 flex-1">
+                        <div className="flex items-center gap-4 text-sm text-slate-400 mb-3">
+                          <div className="flex items-center gap-1">
+                            <Calendar size={14} />
+                            <span>{post.date}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Clock size={14} />
+                            <span>{post.readTime}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <User size={14} />
+                            <span>{post.author}</span>
+                          </div>
+                        </div>
+
+                        <h3 className="text-xl font-semibold text-white group-hover:text-blue-400 transition-colors duration-300 line-clamp-2 mb-3">
+                          {post.title}
+                        </h3>
+
+                        <p className="text-slate-400 text-sm mb-4 line-clamp-3 leading-relaxed">
+                          {getArticlePreview(post.content)}
+                        </p>
+
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {post.keywords
+                            .slice(0, viewMode === 'list' ? 4 : 3)
+                            .map((keyword) => (
+                              <span
+                                key={keyword}
+                                className="px-2 py-1 bg-slate-700/80 text-xs rounded-full text-slate-300 font-medium border border-slate-600"
+                              >
+                                {keyword}
+                              </span>
+                            ))}
+                          {post.keywords.length >
+                            (viewMode === 'list' ? 4 : 3) && (
+                            <span className="px-2 py-1 bg-slate-600/50 text-xs rounded-full text-slate-400 font-medium">
+                              +{post.keywords.length -
+                                (viewMode === 'list' ? 4 : 3)}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="text-xs text-slate-500 flex items-center gap-1">
+                          <Tag size={12} />
+                          {post.category}
+                        </div>
                       </div>
-                    </div>
-                  </motion.article>
+                    </motion.article>
+                  </Link>
                 ))}
               </motion.div>
             )}

@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
 import {
   Search,
   ListFilter as Filter,
@@ -24,14 +23,10 @@ import {
 
 import FloatingNav from './FloatingNav';
 import Breadcrumb from './Breadcrumb';
-import {
-  getAllProjects,
-  getAllTechnologies,
-  ProjectData,
-} from '../data/projectData';
+import { getAllProjects, getAllTechnologies, ProjectData } from '../data/projectData';
+import { Link } from 'react-router-dom';
 
 const ProjectListing: React.FC = () => {
-  const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -167,7 +162,7 @@ const ProjectListing: React.FC = () => {
                 My Projects
               </h1>
               <p className="text-xl text-slate-300 max-w-3xl">
-                Explore my academic, personal, and professional projects — each reflecting my learning journey and passion for technology.
+                Explore my academic and personal projects, each reflecting my learning journey and passion for technology.
               </p>
             </motion.div>
           </div>
@@ -322,91 +317,83 @@ const ProjectListing: React.FC = () => {
                 </button>
               </motion.div>
             ) : (
+              /* cartes projet avec <Link> */
               <motion.div
                 key={`${viewMode}-${currentPage}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4 }}
-                className={
-                  viewMode === 'grid'
-                    ? 'grid md:grid-cols-2 lg:grid-cols-3 gap-8'
-                    : 'space-y-6'
-                }
+                className={viewMode === 'grid' ? 'grid md:grid-cols-2 lg:grid-cols-3 gap-8' : 'space-y-6'}
               >
                 {paginatedProjects.map((project, index) => (
-                  <motion.article
-                    key={project.id}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                    whileHover={{ y: -5 }}
-                    onClick={() => navigate(`/project/${project.id}`)}
-                    className={`bg-slate-800/50 rounded-xl border border-slate-700 hover:border-blue-500/50 transition-all duration-300 cursor-pointer group overflow-hidden ${
-                      viewMode === 'list' ? 'flex' : ''
-                    }`}
-                  >
-                    <div
-                      className={`relative overflow-hidden ${
-                        viewMode === 'list' ? 'w-48 flex-shrink-0' : 'h-48'
+                  <Link key={project.id} to={`/project/${project.id}`} className="block group">
+                    <motion.article
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: index * 0.1 }}
+                      whileHover={{ y: -5 }}
+                      className={`bg-slate-800/50 rounded-xl border border-slate-700 hover:border-blue-500/50 transition-all duration-300 overflow-hidden ${
+                        viewMode === 'list' ? 'flex' : ''
                       }`}
                     >
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        {getProjectIcon(project)}
-                        <div className="absolute bottom-4 right-4 bg-blue-600 p-2 rounded-full">
-                          <ExternalLink size={16} className="text-white" />
+                      <div
+                        className={`relative overflow-hidden ${
+                          viewMode === 'list' ? 'w-48 flex-shrink-0' : 'h-48'
+                        }`}
+                      >
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                          {getProjectIcon(project)}
+                          <div className="absolute bottom-4 right-4 bg-blue-600 p-2 rounded-full">
+                            <ExternalLink size={16} className="text-white" />
+                          </div>
                         </div>
-                      </div>
-
-                      <div className="absolute top-4 left-4 flex flex-col gap-2">
-                        {project.featured && (
-                          <span className="px-2 py-1 bg-yellow-500/90 text-yellow-900 text-xs rounded-full font-medium">
-                            ⭐ Featured
+                        <div className="absolute top-4 left-4 flex flex-col gap-2">
+                          {project.featured && (
+                            <span className="px-2 py-1 bg-yellow-500/90 text-yellow-900 text-xs rounded-full font-medium">
+                              ⭐ Featured
+                            </span>
+                          )}
+                          <div className="flex items-center gap-1 px-2 py-1 bg-slate-900/90 text-white text-xs rounded-full">
+                            {getStatusIcon(project.status)}
+                            <span className="ml-1 capitalize">{project.status.replace('-', ' ')}</span>
+                          </div>
+                        </div>
+                        <div className="absolute top-4 right-4">
+                          <span
+                            className={`px-3 py-1 text-xs rounded-full font-medium ${
+                              project.category === 'personal'
+                                ? 'bg-blue-600/80 text-blue-100'
+                                : project.category === 'academic'
+                                ? 'bg-purple-600/80 text-purple-100'
+                                : 'bg-green-600/80 text-green-100'
+                            }`}
+                          >
+                            {project.category.charAt(0).toUpperCase() + project.category.slice(1)}
                           </span>
-                        )}
-                        <div className="flex items-center gap-1 px-2 py-1 bg-slate-900/90 text-white text-xs rounded-full">
-                          {getStatusIcon(project.status)}
-                          <span className="ml-1 capitalize">{project.status.replace('-', ' ')}</span>
                         </div>
                       </div>
 
-                      <div className="absolute top-4 right-4">
-                        <span
-                          className={`px-3 py-1 text-xs rounded-full font-medium ${
-                            project.category === 'personal'
-                              ? 'bg-blue-600/80 text-blue-100'
-                              : project.category === 'academic'
-                              ? 'bg-purple-600/80 text-purple-100'
-                              : 'bg-green-600/80 text-green-100'
-                          }`}
-                        >
-                          {project.category.charAt(0).toUpperCase() + project.category.slice(1)}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="p-6 flex-1">
-                      <h3 className="text-xl font-semibold text-white group-hover:text-blue-400 transition-colors duration-300 line-clamp-2 mb-3">
-                        {project.title}
-                      </h3>
-                      <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
-                        <div className="flex items-center gap-1">
-                          <Calendar size={14} />
-                          <span>{project.period}</span>
+                      <div className="p-6 flex-1">
+                        <h3 className="text-xl font-semibold text-white group-hover:text-blue-400 transition-colors duration-300 line-clamp-2 mb-3">
+                          {project.title}
+                        </h3>
+                        <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
+                          <div className="flex items-center gap-1">
+                            <Calendar size={14} />
+                            <span>{project.period}</span>
+                          </div>
                         </div>
-                      </div>
-                      <p className="text-slate-400 text-sm mb-4 line-clamp-3 leading-relaxed">
-                        {project.description}
-                      </p>
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {project.technologies
-                          .slice(0, viewMode === 'list' ? 6 : 4)
-                          .map((tech) => (
+                        <p className="text-slate-400 text-sm mb-4 line-clamp-3 leading-relaxed">
+                          {project.description}
+                        </p>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {project.technologies.slice(0, viewMode === 'list' ? 6 : 4).map((tech) => (
                             <span
                               key={tech}
                               className="px-2 py-1 bg-slate-700/80 text-xs rounded-full text-slate-300 font-medium border border-slate-600"
@@ -414,56 +401,20 @@ const ProjectListing: React.FC = () => {
                               {tech}
                             </span>
                           ))}
-                        {project.technologies.length > (viewMode === 'list' ? 6 : 4) && (
-                          <span className="px-2 py-1 bg-slate-600/50 text-xs rounded-full text-slate-400 font-medium">
-                            +{project.technologies.length - (viewMode === 'list' ? 6 : 4)}
-                          </span>
-                        )}
+                          {project.technologies.length > (viewMode === 'list' ? 6 : 4) && (
+                            <span className="px-2 py-1 bg-slate-600/50 text-xs rounded-full text-slate-400 font-medium">
+                              +{project.technologies.length - (viewMode === 'list' ? 6 : 4)}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-xs text-slate-500">📍 {project.location}</div>
                       </div>
-                      <div className="text-xs text-slate-500">📍 {project.location}</div>
-                    </div>
-                  </motion.article>
+                    </motion.article>
+                  </Link>
                 ))}
               </motion.div>
             )}
           </AnimatePresence>
-
-          {totalPages > 1 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-              className="flex justify-center items-center gap-2 mt-12"
-            >
-              <button
-                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                disabled={currentPage === 1}
-                className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-300 hover:text-white hover:border-blue-500 disabled:opacity-50"
-              >
-                Previous
-              </button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-4 py-2 rounded-lg transition-all duration-300 ${
-                    currentPage === page
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:border-blue-500'
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
-              <button
-                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                disabled={currentPage === totalPages}
-                className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-300 hover:text-white hover:border-blue-500 disabled:opacity-50"
-              >
-                Next
-              </button>
-            </motion.div>
-          )}
         </div>
       </section>
 
