@@ -58,7 +58,7 @@ const HomePage: React.FC = () => {
 
 function App() {
 
-  const RouterComponent = BrowserRouter; //si ca ne marche pas remettre const RouterComponent = import.meta.env.PROD ? HashRouter : BrowserRouter;
+  const RouterComponent = import.meta.env.PROD ? HashRouter : BrowserRouter; //si ca ne marche pas essayer const RouterComponent = BrowserRouter;
   return (
     <RouterComponent basename={import.meta.env.BASE_URL}>
       <div className="relative">
