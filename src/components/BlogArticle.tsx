@@ -30,7 +30,7 @@ const BlogArticle: React.FC = () => {
     return getRelatedArticles(articleData.id, categoryId, 3);
   }, [articleData, categoryId]);
 
-  // Load likes & comments from API
+  // Load likes & comments
   useEffect(() => {
     if (!articleData) return;
     const load = async () => {
@@ -53,9 +53,7 @@ const BlogArticle: React.FC = () => {
   if (!articleData) {
     return (
       <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Article not found</h1>
-        </div>
+        <h1 className="text-2xl font-bold mb-4">Article not found</h1>
         <FloatingNav categoryId={categoryId} articleId={articleId} />
       </div>
     );
@@ -76,7 +74,6 @@ const BlogArticle: React.FC = () => {
     }
   };
 
-  // Date formatting → EN (US locale)
   const dtf = new Intl.DateTimeFormat('en-US', {
     dateStyle: 'long',
     timeStyle: 'short',
@@ -122,257 +119,245 @@ const BlogArticle: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
-      {/* Article Header */}
+      {/* Header */}
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="bg-slate-900/95 backdrop-blur-md border-b border-slate-700 pt-16 md:pt-0"
+        className="relative bg-gradient-to-b from-slate-900 via-slate-900/95 to-slate-900/80 border-b border-slate-700 pt-16 md:pt-0"
       >
-        <div className="container mx-auto px-6 py-12">
+        {articleData.image && (
+          <div className="absolute inset-0">
+            <img
+              src={articleData.image}
+              alt={articleData.title}
+              className="w-full h-full object-cover opacity-20"
+            />
+          </div>
+        )}
+        <div className="relative container mx-auto px-6 py-12">
           <div className="max-w-4xl mx-auto">
             <Breadcrumb />
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="max-w-4xl mx-auto"
-          >
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent leading-tight">
-              {articleData.title}
-            </h1>
-            <div className="flex flex-wrap gap-2 mb-8">
-              {articleData.keywords.map((keyword) => (
-                <span
-                  key={keyword}
-                  className="px-3 py-1 bg-slate-700/50 text-slate-400 text-sm rounded-full border border-slate-600"
-                >
-                  {keyword}
-                </span>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </motion.header>
-
-      {/* Article Content */}
-      <main className="container mx-auto px-6 py-12 pb-24">
-        <div className="max-w-4xl mx-auto">
-          {/* Featured Image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="mb-12"
-          >
-            <div className="relative overflow-hidden rounded-xl border border-slate-700">
-              <img
-                src={articleData.image}
-                alt={articleData.title}
-                className="w-full h-64 md:h-96 object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
-            </div>
-            <p className="text-sm text-slate-400 mt-3 italic text-center">
-              {articleData.imageCaption}
-            </p>
-          </motion.div>
-
-          {/* Article Body */}
-          <motion.article
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="mb-12 prose prose-lg prose-invert max-w-none text-justify"
-          >
-            <ReactMarkdown>{articleData.content}</ReactMarkdown>
-          </motion.article>
-
-          {/* Like Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            className="flex justify-center mb-12"
-          >
-            <motion.button
-              onClick={handleLike}
-              disabled={hasLiked}
-              whileHover={{ scale: hasLiked ? 1 : 1.05 }}
-              whileTap={{ scale: hasLiked ? 1 : 0.95 }}
-              className={`flex items-center gap-3 px-6 py-3 rounded-full border transition-all duration-300 ${
-                hasLiked
-                  ? 'bg-red-600/20 border-red-500/50 text-red-400 cursor-default'
-                  : 'bg-slate-800/50 border-slate-600 text-slate-400 hover:border-red-500/50 hover:text-red-400 hover:bg-red-600/10'
-              }`}
-            >
-              <Heart size={20} className={hasLiked ? 'fill-current' : ''} />
-              <span className="font-medium">{likes}</span>
-              <span className="text-sm">{hasLiked ? 'Thanks!' : 'Like'}</span>
-            </motion.button>
-          </motion.div>
-
-          {/* Article Meta */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.0 }}
-            className="bg-slate-800/30 p-6 rounded-xl border border-slate-700 mb-12"
-          >
-            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400">
-              <div className="flex items-center gap-2"><Calendar size={16} /><span>Published on {articleData.date}</span></div>
-              <div className="flex items-center gap-2"><Clock size={16} /><span>{articleData.readTime}</span></div>
-              <div className="flex items-center gap-2"><User size={16} /><span>{articleData.author}</span></div>
-              <div className="flex items-center gap-2"><Tag size={16} /><span>{articleData.category}</span></div>
-            </div>
-          </motion.div>
-
-          {/* Related Articles Section */}
-          {relatedArticles.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.2 }}
-              className="bg-slate-800/30 p-8 rounded-xl border border-slate-700 mb-16"
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-center mt-8"
             >
-              <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-                  </svg>
-                </div>
-                Related Articles
-              </h3>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {relatedArticles.map((article, index) => {
-                  let articleCategoryId = '';
-                  Object.keys(articlesData).forEach(catId => {
-                    if (articlesData[catId][article.id]) {
-                      articleCategoryId = catId;
-                    }
-                  });
-
-                  return (
-                    <Link
-                      key={article.id}
-                      to={`/blog/${articleCategoryId}/${article.id}`}
-                      className="group"
-                    >
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4, delay: 1.4 + index * 0.1 }}
-                        whileHover={{ y: -5, scale: 1.02 }}
-                        className="bg-slate-700/30 rounded-lg border border-slate-600 hover:border-blue-500/50 transition-all duration-300 overflow-hidden"
-                      >
-                        <div className="relative">
-                          <img
-                            src={article.image}
-                            alt={article.title}
-                            className="w-full h-32 object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
-                          <div className="absolute top-2 left-2">
-                            <span className="px-2 py-1 text-xs bg-blue-600/80 text-blue-100 rounded-full font-medium">
-                              {article.category}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="p-4">
-                          <h4 className="font-semibold text-white mb-2 line-clamp-2 group-hover:text-blue-400 transition-colors duration-300">
-                            {article.title}
-                          </h4>
-                          <div className="flex items-center gap-3 text-xs text-slate-400 mb-3">
-                            <div className="flex items-center gap-1"><Calendar size={12} /><span>{article.date}</span></div>
-                            <div className="flex items-center gap-1"><Clock size={12} /><span>{article.readTime}</span></div>
-                          </div>
-                          <p className="text-slate-400 text-sm line-clamp-2 mb-3">
-                            {getArticlePreview(article.content)}
-                          </p>
-                          <div className="flex flex-wrap gap-1">
-                            {article.keywords.slice(0, 2).map((keyword) => (
-                              <span key={keyword} className="px-2 py-1 bg-slate-600/50 text-slate-400 text-xs rounded-full">
-                                {keyword}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      </motion.div>
-                    </Link>
-                  );
-                })}
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent leading-tight">
+                {articleData.title}
+              </h1>
+              <div className="flex flex-wrap justify-center items-center gap-4 text-slate-400 text-sm mb-6">
+                <span className="flex items-center gap-1"><Calendar size={14} />{articleData.date}</span>
+                <span className="flex items-center gap-1"><Clock size={14} />{articleData.readTime}</span>
+                <span className="flex items-center gap-1"><User size={14} />{articleData.author}</span>
+              </div>
+              <div className="flex flex-wrap justify-center gap-2 mb-4">
+                {articleData.keywords.map((k) => (
+                  <span key={k} className="px-3 py-1 bg-slate-800/60 border border-slate-700 rounded-full text-xs text-slate-400">
+                    {k}
+                  </span>
+                ))}
               </div>
             </motion.div>
-          )}
+          </div>
+        </div>
+      </motion.header>
 
-          {/* Comments Section */}
-          <motion.div
+      {/* Main content */}
+      <main className="container mx-auto px-6 py-16 pb-24 max-w-4xl">
+        {/* Markdown with custom renderers */}
+        <motion.article
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="prose prose-lg prose-invert max-w-none leading-relaxed"
+        >
+          <ReactMarkdown
+            components={{
+              h2: ({ children }) => (
+                <h2 className="text-2xl font-semibold text-cyan-400 mt-10 mb-4">{children}</h2>
+              ),
+              h3: ({ children }) => (
+                <h3 className="text-xl font-semibold text-blue-400 mt-8 mb-3">{children}</h3>
+              ),
+              p: ({ children }) => (
+                <p className="text-slate-300 mb-6 text-justify">{children}</p>
+              ),
+              img: ({ src, alt }) => (
+                <figure className="my-8">
+                  <img
+                    src={src}
+                    alt={alt || ''}
+                    loading="lazy"
+                    className="rounded-xl border border-slate-700 shadow-md mx-auto max-h-[600px] object-contain"
+                  />
+                  {alt && (
+                    <figcaption className="text-center text-sm text-slate-500 mt-2 italic">
+                      {alt}
+                    </figcaption>
+                  )}
+                </figure>
+              ),
+              ul: ({ children }) => (
+                <ul className="list-disc pl-5 space-y-2 mb-6 text-slate-300">{children}</ul>
+              ),
+              li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+              code: ({ children }) => (
+                <code className="bg-slate-800 px-2 py-1 rounded text-cyan-300 font-mono text-sm">
+                  {children}
+                </code>
+              ),
+            }}
+          >
+            {articleData.content}
+          </ReactMarkdown>
+        </motion.article>
+
+        {/* Like button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex justify-center mt-16"
+        >
+          <motion.button
+            onClick={handleLike}
+            disabled={hasLiked}
+            whileHover={{ scale: hasLiked ? 1 : 1.05 }}
+            whileTap={{ scale: hasLiked ? 1 : 0.95 }}
+            className={`flex items-center gap-3 px-6 py-3 rounded-full border transition-all duration-300 ${
+              hasLiked
+                ? 'bg-red-600/20 border-red-500/50 text-red-400 cursor-default'
+                : 'bg-slate-800/50 border-slate-600 text-slate-400 hover:border-red-500/50 hover:text-red-400 hover:bg-red-600/10'
+            }`}
+          >
+            <Heart size={20} className={hasLiked ? 'fill-current' : ''} />
+            <span className="font-medium">{likes}</span>
+            <span className="text-sm">{hasLiked ? 'Thanks!' : 'Like'}</span>
+          </motion.button>
+        </motion.div>
+
+        {/* Related articles */}
+        {relatedArticles.length > 0 && (
+          <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.4 }}
-            className="bg-slate-800/30 p-8 rounded-xl border border-slate-700"
+            transition={{ duration: 0.6, delay: 1.2 }}
+            className="mt-20 bg-gradient-to-br from-slate-800/60 to-blue-900/20 p-8 rounded-2xl border border-slate-700 shadow-lg" // couleur de la tuile Related articles
           >
-            <div className="flex items-center gap-2 mb-8">
-              <MessageCircle size={24} className="text-blue-400" />
-              <h3 className="text-2xl font-bold text-white">
-                Comments ({comments.length})
-              </h3>
-            </div>
-
-            {/* Comment Form */}
-            <form onSubmit={handleCommentSubmit} className="mb-8">
-              <div className="grid md:grid-cols-2 gap-4 mb-4">
-                <input
-                  type="text"
-                  placeholder="Your name"
-                  value={commentAuthor}
-                  onChange={(e) => setCommentAuthor(e.target.value)}
-                  className="px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
-                  required
-                />
+            <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
               </div>
-              <textarea
-                placeholder="Your comment..."
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                rows={4}
-                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 resize-none mb-4"
+                Related Articles
+            </h3>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {relatedArticles.map((a, i) => {
+                let articleCategoryId = '';
+                Object.keys(articlesData).forEach(catId => {
+                  if (articlesData[catId][a.id]) {
+                    articleCategoryId = catId;
+                  }
+                });
+            
+                return (
+                  <Link
+                    key={a.id}
+                    to={`/blog/${articleCategoryId}/${a.id}`}
+                    className="group bg-slate-800/50 border border-slate-700 rounded-xl overflow-hidden hover:border-blue-500/50 transition-all duration-300"
+                  >
+                    <div className="relative">
+                      <img
+                        src={a.image}
+                        alt={a.title}
+                        className="w-full h-32 object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 to-transparent" />
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-semibold text-white group-hover:text-blue-400 transition-colors duration-300 line-clamp-2 mb-2">
+                        {a.title}
+                      </h4>
+                      <div className="flex items-center gap-3 text-xs text-slate-400 mb-3">
+                        <div className="flex items-center gap-1"><Calendar size={12} /><span>{a.date}</span></div>
+                        <div className="flex items-center gap-1"><Clock size={12} /><span>{a.readTime}</span></div>
+                      </div>                      
+                      <p className="text-slate-400 text-sm line-clamp-2 mb-3">
+                        {getArticlePreview(a.content)}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </motion.section>
+        )}
+
+        {/* Comments */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mt-20 bg-slate-800/30 p-8 rounded-xl border border-slate-700"
+        >
+          <div className="flex items-center gap-2 mb-8">
+            <MessageCircle size={24} className="text-blue-400" />
+            <h3 className="text-2xl font-bold text-white">Comments ({comments.length})</h3>
+          </div>
+
+          {/* Comment form */}
+          <form onSubmit={handleCommentSubmit} className="mb-8">
+            <div className="grid md:grid-cols-2 gap-4 mb-4">
+              <input
+                type="text"
+                placeholder="Your name"
+                value={commentAuthor}
+                onChange={(e) => setCommentAuthor(e.target.value)}
+                className="px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
                 required
               />
-              <motion.button
-                type="submit"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors duration-300"
-              >
-                Post comment
-              </motion.button>
-            </form>
-
-            {/* Comments List */}
-            <div className="space-y-6">
-              {comments.map((comment) => (
-                <motion.div
-                  key={comment.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4 }}
-                  className="bg-slate-700/30 p-6 rounded-lg border border-slate-600"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-semibold text-white">{comment.author}</h4>
-                    <span className="text-sm text-slate-400">{formatCommentDate(comment.date)}</span>
-                  </div>
-                  <p className="text-slate-300 leading-relaxed">{comment.content}</p>
-                </motion.div>
-              ))}
             </div>
-          </motion.div>
-        </div>
+            <textarea
+              placeholder="Your comment..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              rows={4}
+              className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 resize-none mb-4"
+              required
+            />
+            <motion.button
+              type="submit"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors duration-300"
+            >
+              Post comment
+            </motion.button>
+          </form>
+
+          {/* Comments list */}
+          <div className="space-y-6">
+            {comments.map((comment) => (
+              <motion.div
+                key={comment.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="bg-slate-700/30 p-6 rounded-lg border border-slate-600"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-semibold text-white">{comment.author}</h4>
+                  <span className="text-sm text-slate-400">{formatCommentDate(comment.date)}</span>
+                </div>
+                <p className="text-slate-300 leading-relaxed">{comment.content}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
       </main>
 
       <FloatingNav categoryId={categoryId} articleId={articleId} />
